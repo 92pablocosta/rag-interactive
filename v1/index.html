@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG Lab v1 - Visual Debugger</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-area">
+      <span class="logo-badge">v1.0</span>
+      <h1>RAG Lab & Debugger</h1>
+    </div>
+    <nav class="nav-links">
+      <a href="../index.html" class="nav-btn">← Voltar para Learn RAG (v2)</a>
+    </nav>
+  </header>
+
+  <main class="lab-container">
+    <aside class="sidebar-controls">
+      <h2>Painel de Configuração</h2>
+      
+      <div class="control-group">
+        <label for="lab-doc-select">Documento Base</label>
+        <select id="lab-doc-select">
+          <option value="dentcare">Clínica DentCare (Odontologia)</option>
+          <option value="techcorp">TechCorp (Política de TI)</option>
+          <option value="custom">Texto Customizado...</option>
+        </select>
+      </div>
+
+      <div class="control-group hidden" id="custom-doc-group">
+        <label for="lab-custom-text">Texto Customizado</label>
+        <textarea id="lab-custom-text" rows="5" placeholder="Insira seu texto aqui..."></textarea>
+      </div>
+
+      <div class="control-group">
+        <label for="lab-chunk-size">Tamanho do Chunk (caracteres): <span id="val-chunk-size">140</span></label>
+        <input type="range" id="lab-chunk-size" min="40" max="300" step="10" value="140">
+      </div>
+
+      <div class="control-group">
+        <label for="lab-overlap">Overlap (caracteres): <span id="val-overlap">30</span></label>
+        <input type="range" id="lab-overlap" min="0" max="100" step="5" value="30">
+      </div>
+
+      <div class="control-group">
+        <label for="lab-top-k">Top-K Retrieval: <span id="val-top-k">3</span></label>
+        <input type="range" id="lab-top-k" min="1" max="5" step="1" value="3">
+      </div>
+
+      <div class="control-group">
+        <label for="lab-query">Pergunta de Teste</label>
+        <input type="text" id="lab-query" value="Quanto custa a consulta inicial?">
+      </div>
+
+      <button id="btn-run-debug" class="btn-primary">Executar Pipeline no Debugger</button>
+    </aside>
+
+    <section class="debugger-view">
+      <div class="debug-card">
+        <h3>1. Chunks Gerados (<span id="count-chunks">0</span>)</h3>
+        <div id="debug-chunks-list" class="chunks-grid"></div>
+      </div>
+
+      <div class="debug-card">
+        <h3>2. Ranking de Similaridade (Cosine Distance Sim)</h3>
+        <div id="debug-similarity-list" class="sim-list"></div>
+      </div>
+
+      <div class="debug-card">
+        <h3>3. Prompt Montado (System + Context + Query)</h3>
+        <pre id="debug-prompt-output" class="code-block"></pre>
+      </div>
+
+      <div class="debug-card">
+        <h3>4. Resposta Gerada & Grounding</h3>
+        <div id="debug-answer-output" class="answer-box"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

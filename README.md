@@ -50,12 +50,12 @@ The main page contains the initial **Basic RAG** learning journey. It covers:
 
 - the problem RAG solves and the role of external documents;
 - dynamic character-based chunking and overlap;
-- simulated embeddings and a two-dimensional vector-space view;
+- simulated educational feature vectors and an illustrative two-dimensional projection;
 - query vectorization and cosine-similarity concepts;
-- deterministic dense, lexical, and hybrid retrieval demonstrations;
-- Top-K selection and a heuristic reranking preview;
+- deterministic dense cosine-similarity retrieval;
+- Top-K selection with context-size and approximate-token feedback;
 - retrieved-context and augmented-prompt assembly;
-- simulated generation, source tracing, grounding states, and quality scores;
+- deterministic simulated generation with stable evidence identities and strict grounding;
 - an animated complete-pipeline walkthrough; and
 - English/Portuguese switching for selected dynamic status messages.
 
@@ -121,11 +121,10 @@ In the current Learn experience, you can:
 - change chunk size and overlap, and highlight overlapping text;
 - inspect simulated chunk vectors in an SVG visualization;
 - enter a query or choose presets, including an out-of-domain test;
-- compare simulated dense, lexical, and hybrid rankings;
+- inspect a simulated dense cosine-similarity ranking;
 - adjust a geometric cosine-angle visualization;
 - change Top-K and observe selected chunks, context, prompt, and answer states;
-- toggle the heuristic reranking demonstration;
-- trace a simulated grounded answer back to its source chunk; and
+- trace canonical evidence to its current chunk, rank, Top-K state, context, and citation; and
 - run, reset, or step through the complete pipeline animation.
 
 Because the controls share state, a change near the start of the lesson can affect later retrieval, context, and generation views.
@@ -138,9 +137,9 @@ These examples connect visual behavior to familiar RAG implementation patterns. 
 
 ## Educational simulations
 
-Educational simulations are used where running real embedding models or LLMs would add unnecessary infrastructure to the introductory learning experience. Current visualizations may deterministically simulate embeddings, semantic similarity, retrieval scores, token estimates, reranking, LLM responses, grounding, and evaluation values.
+Educational simulations are used where running real embedding models or LLMs would add unnecessary infrastructure to the introductory learning experience. The current Learn module deterministically simulates educational feature vectors, dense cosine retrieval, approximate token counts, LLM responses, and grounding.
 
-These simulations teach how information and decisions move through the pipeline; they are not production-grade machine-learning implementations. In particular, the current lexical ranking is a simplified heuristic rather than a complete BM25 implementation, the hybrid score is a custom combination that includes rank-fusion signals, reranking does not run a Cross-Encoder, and the evaluation display does not execute Ragas.
+These simulations teach how information and decisions move through the pipeline; they are not production-grade machine-learning implementations. The browser vectors are handcrafted educational features rather than model-produced embeddings, and the 2D chart is an illustrative projection rather than PCA.
 
 The project follows a simple accuracy principle:
 
@@ -209,7 +208,7 @@ The conceptual module roadmap is:
 - [ ] Agentic RAG
 - [ ] GraphRAG
 
-The Basic RAG page currently includes small simulated previews of hybrid retrieval, reranking, and evaluation. These are not substitutes for the planned dedicated modules.
+Hybrid retrieval, reranking, and evaluation are intentionally reserved for future dedicated modules rather than previewed inside Basic RAG.
 
 Future product ideas also include:
 
