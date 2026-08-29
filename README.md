@@ -42,6 +42,14 @@ The guided experience follows four steps:
 3. **Connect to Python** — relate each concept to a small Python example shown beside it.
 4. **See the architecture** — run or step through the complete indexing, retrieval, and generation flow.
 
+Module 01 remains a continuous vertical journey organized into five narrative phases:
+
+```text
+Foundations → Indexing → Retrieval → Augment & Generate → Connect
+```
+
+Within that journey, **Evidence A — Consultation price** acts as a recognizable thread from the source document through chunking, ranking, Top-K, context, prompt construction, and the final grounded answer. Documents, chunks, vectors, rankings, context, prompts, generation, and the connected pipeline use distinct visual treatments while remaining part of the same narrative.
+
 The intended progression is concept → visualization → experiment → Python, rather than framework API → copied code → hidden mechanics.
 
 ## What you can explore today
@@ -57,7 +65,8 @@ The main page contains the initial **Basic RAG** learning journey. It covers:
 - retrieved-context and augmented-prompt assembly;
 - a five-item canonical evidence catalog with stable identities across changing chunk boundaries;
 - deterministic simulated generation with strict evidence grounding and safe unsupported-query states;
-- an animated complete-pipeline walkthrough; and
+- an animated complete-pipeline walkthrough with separate indexing and online-query paths;
+- compact conceptual Python blocks beside each computational stage; and
 - an English-only interface while complete translation remains future work.
 
 The `v1/` directory contains an earlier **RAG Lab** experiment. It lets learners choose a sample or custom document, change chunk size, overlap, Top-K, and query text, then inspect generated chunks, a heuristic similarity ranking, the assembled prompt, and a simulated answer.
@@ -119,21 +128,37 @@ RAG Interactive is designed around three complementary experiences:
 In the current Learn experience, you can:
 
 - switch among tiny, balanced, and large chunk presets;
-- change chunk size and overlap without losing source text, and highlight the overlap that actually repeats between adjacent chunks;
+- change chunk size and overlap without losing source text, with the affected value, output, and Python line highlighted together;
+- highlight the overlap that actually repeats between adjacent chunks;
 - inspect simulated chunk vectors in an SVG visualization;
 - enter a query or choose presets, including an out-of-domain test;
 - inspect a simulated dense cosine-similarity ranking;
 - adjust a geometric cosine-angle visualization;
 - change Top-K and observe selected chunks, context, prompt, and answer states;
 - trace canonical evidence to its current chunk, dense rank, Top-K state, context, and citation;
-- see when fragmented or excluded evidence cannot support an answer; and
-- run, reset, or step through the complete pipeline animation.
+- see when fragmented or excluded evidence cannot support an answer;
+- open citation details inline without jumping back to an earlier section; and
+- run, reset, or step through pipeline states that distinguish completed, current, and upcoming work.
 
 Because the controls share state, a change near the start of the lesson can affect later retrieval, context, and generation views.
 
+## Accessibility and responsive behavior
+
+The Learn experience keeps its vertical structure across screen sizes. On wider layouts, a sticky section navigator shows progress through the lesson. Below 1200px, it becomes a compact progress indicator beneath the navigation bar. Dense visualizations and pipeline rows include horizontal-overflow protection and visible scrolling guidance when they cannot fit safely.
+
+Current accessibility support includes:
+
+- visible keyboard focus styles and larger interactive targets;
+- `aria-pressed`, `aria-expanded`, `aria-current`, and live status regions where state changes;
+- keyboard-operable SVG points for inspecting simulated vectors;
+- semantic labels for controls and visual regions; and
+- reduced-motion behavior for users who request it.
+
+These behaviors are covered by structural tests and code inspection. A manual visual and keyboard pass in a real browser is still recommended before publication, particularly at desktop, tablet, and mobile breakpoints; the integrated browser was unavailable during the latest verification pass.
+
 ## Python-first learning
 
-Python snippets are placed next to the concepts they represent: loading a document, splitting text, producing embeddings, calculating similarity, selecting Top-K results, and assembling a prompt.
+Compact “In Python” blocks are placed next to the concepts they represent: loading a document, splitting text, producing embeddings, calculating similarity, selecting Top-K results, assembling context and a prompt, and generating an answer. Relevant lines update or highlight alongside the interactive controls.
 
 These examples connect visual behavior to familiar RAG implementation patterns. They are explanatory snippets only—Python is **not** executed in the browser, and the project does not currently include a Python runtime or backend.
 
@@ -191,10 +216,14 @@ The testable RAG logic is isolated in `rag-core.js` and uses only Node.js built-
 ```bash
 node --check script.js
 node --check rag-core.js
+node --check tests/rag-core.test.js
+node --check tests/ui-contract.test.js
 node --test tests/*.test.js
 ```
 
-The current suite covers chunk presets and boundary values, incompatible overlap adjustment, complete document reconstruction, canonical evidence lookup, supported and unsupported queries, Top-K values of 1, 3, and 5, citation integrity, cosine-similarity endpoints, token estimates, and UI contracts for branding, narrative phases, accessibility, and responsive orientation. These programmatic checks complement—not replace—visual browser testing for interface changes.
+The current suite contains 25 passing tests covering chunk presets and boundary values, incompatible overlap adjustment, complete document reconstruction, canonical evidence lookup, supported and unsupported queries, Top-K values of 1, 3, and 5, citation integrity, cosine-similarity endpoints, token estimates, and UI contracts for branding, narrative phases, accessibility, and responsive orientation.
+
+The latest Module 01 verification also checked JavaScript syntax, HTML structure and unique IDs, JavaScript-to-DOM references, CSS brace structure, whitespace, overflow protections, keyboard and reduced-motion contracts, and successful local HTTP responses for the HTML, CSS, and JavaScript assets. The advanced-module content remained absent from Learn, and `v1/` remained unchanged. These programmatic and structural checks complement—not replace—visual browser testing.
 
 ## Project structure
 
