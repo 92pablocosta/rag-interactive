@@ -18,23 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const messages = {
     groundingVerified: 'Grounding verified',
-    unsupportedQuery: 'Information unavailable: no canonical evidence is defined for this question.',
+    unsupportedQuery: 'The retrieved context does not contain enough evidence to answer this question.',
     evidenceSplit: 'The required evidence is split across chunks, so no retrieved chunk contains the complete fact.',
     evidenceExcluded: 'The complete evidence exists in the document but was not included in the active Top-K context.'
   };
 
   const state = {
-    documentText: `A clínica DentCare funciona de segunda a sexta-feira, das 8h às 18h.
-A consulta odontológica inicial custa R$ 250.
-A Dra. Ana é especialista em ortodontia e atende às terças e quintas.
-O Dr. Carlos realiza tratamentos de canal e procedimentos de endodontia.
-Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.
-A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`,
+    documentText: `DentCare Clinic is open from Monday to Friday, from 8 AM to 6 PM.
+The initial dental consultation costs R$ 250.
+Dr. Ana is an orthodontics specialist and works on Tuesdays and Thursdays.
+Dr. Carlos performs root canal treatments and endodontics procedures.
+Cancellations must be made at least 24 hours in advance.
+The clinic accepts payments via PIX, credit card, and debit card.`,
     chunkSize: 140,
     overlap: 30,
     showOverlap: true,
     chunks: [],
-    query: 'Quanto custa uma consulta?',
+    query: 'How much does a consultation cost?',
     topK: 3,
     rankedChunks: [],
     retrievedChunks: [],
@@ -49,35 +49,35 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
       id: 'evidence-a',
       label: 'Evidence A',
       title: 'Consultation price',
-      text: 'A consulta odontológica inicial custa R$ 250.',
-      queryTerms: ['custa', 'preco', 'valor']
+      text: 'The initial dental consultation costs R$ 250.',
+      queryTerms: ['cost', 'price', 'much']
     },
     {
       id: 'evidence-b',
       label: 'Evidence B',
       title: 'Orthodontics specialist and schedule',
-      text: 'A Dra. Ana é especialista em ortodontia e atende às terças e quintas.',
-      queryTerms: ['ortodont', 'ana']
+      text: 'Dr. Ana is an orthodontics specialist and works on Tuesdays and Thursdays.',
+      queryTerms: ['orthodont', 'ana']
     },
     {
       id: 'evidence-c',
       label: 'Evidence C',
       title: 'Accepted payment methods',
-      text: 'A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.',
-      queryTerms: ['pagamento', 'pix', 'cartao']
+      text: 'The clinic accepts payments via PIX, credit card, and debit card.',
+      queryTerms: ['payment', 'pix', 'card']
     },
     {
       id: 'evidence-d',
       label: 'Evidence D',
       title: 'Cancellation policy',
-      text: 'Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.',
-      queryTerms: ['cancel', '24 hora']
+      text: 'Cancellations must be made at least 24 hours in advance.',
+      queryTerms: ['cancel', '24 hour']
     },
     {
       id: 'evidence-e',
       label: 'Evidence E',
       title: 'Root canal treatment',
-      text: 'O Dr. Carlos realiza tratamentos de canal e procedimentos de endodontia.',
+      text: 'Dr. Carlos performs root canal treatments and endodontics procedures.',
       queryTerms: ['canal', 'carlos', 'endodont']
     }
   ];
@@ -691,10 +691,10 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
   }
 
   btnVectorizeQuery.addEventListener('click', () => {
-    setQuery(userQueryInput.value.trim() || 'Quanto custa uma consulta?');
+    setQuery(userQueryInput.value.trim() || 'How much does a consultation cost?');
   });
   userQueryInput.addEventListener('keydown', event => {
-    if (event.key === 'Enter') setQuery(userQueryInput.value.trim() || 'Quanto custa uma consulta?');
+    if (event.key === 'Enter') setQuery(userQueryInput.value.trim() || 'How much does a consultation cost?');
   });
   qPresetBtns.forEach(button => {
     button.addEventListener('click', () => setQuery(button.dataset.q, button));
@@ -728,7 +728,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     state.pipelineStep = -1;
     pipelineNodes.forEach(node => {
       const element = document.getElementById(node.id);
-      element?.classList.remove('active-node', 'completed-node', 'current-node');
+      element?.classList.remove('completed-node', 'current-node');
       element?.classList.add('upcoming-node');
     });
     pipelineStatusText.textContent = 'Status: Ready to run pipeline simulation.';
@@ -741,7 +741,6 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
       element?.classList.toggle('completed-node', index < state.pipelineStep);
       element?.classList.toggle('current-node', index === state.pipelineStep);
       element?.classList.toggle('upcoming-node', index > state.pipelineStep);
-      element?.classList.remove('active-node');
     });
     const currentNode = pipelineNodes[state.pipelineStep];
     pipelineStatusText.textContent = currentNode.text;

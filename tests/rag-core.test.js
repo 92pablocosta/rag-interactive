@@ -13,19 +13,19 @@ const {
   estimateTokens
 } = require('../rag-core.js');
 
-const documentText = `A clínica DentCare funciona de segunda a sexta-feira, das 8h às 18h.
-A consulta odontológica inicial custa R$ 250.
-A Dra. Ana é especialista em ortodontia e atende às terças e quintas.
-O Dr. Carlos realiza tratamentos de canal e procedimentos de endodontia.
-Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.
-A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`;
+const documentText = `DentCare Clinic is open from Monday to Friday, from 8 AM to 6 PM.
+The initial dental consultation costs R$ 250.
+Dr. Ana is an orthodontics specialist and works on Tuesdays and Thursdays.
+Dr. Carlos performs root canal treatments and endodontics procedures.
+Cancellations must be made at least 24 hours in advance.
+The clinic accepts payments via PIX, credit card, and debit card.`;
 
 const evidenceCatalog = [
-  { id: 'evidence-a', text: 'A consulta odontológica inicial custa R$ 250.', queryTerms: ['custa', 'preco', 'valor'] },
-  { id: 'evidence-b', text: 'A Dra. Ana é especialista em ortodontia e atende às terças e quintas.', queryTerms: ['ortodont', 'ana'] },
-  { id: 'evidence-c', text: 'A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.', queryTerms: ['pagamento', 'pix', 'cartao'] },
-  { id: 'evidence-d', text: 'Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.', queryTerms: ['cancel', '24 hora'] },
-  { id: 'evidence-e', text: 'O Dr. Carlos realiza tratamentos de canal e procedimentos de endodontia.', queryTerms: ['canal', 'carlos', 'endodont'] }
+  { id: 'evidence-a', text: 'The initial dental consultation costs R$ 250.', queryTerms: ['cost', 'price', 'much'] },
+  { id: 'evidence-b', text: 'Dr. Ana is an orthodontics specialist and works on Tuesdays and Thursdays.', queryTerms: ['orthodont', 'ana'] },
+  { id: 'evidence-c', text: 'The clinic accepts payments via PIX, credit card, and debit card.', queryTerms: ['payment', 'pix', 'card'] },
+  { id: 'evidence-d', text: 'Cancellations must be made at least 24 hours in advance.', queryTerms: ['cancel', '24 hour'] },
+  { id: 'evidence-e', text: 'Dr. Carlos performs root canal treatments and endodontics procedures.', queryTerms: ['canal', 'carlos', 'endodont'] }
 ];
 
 const configurations = [
@@ -99,11 +99,11 @@ test('Evidence A keeps its identity while its current chunk changes', () => {
 
 test('evidence support always returns a real retrieved chunk or null', async t => {
   const queryByEvidence = {
-    'evidence-a': 'Quanto custa uma consulta?',
-    'evidence-b': 'Quem atende ortodontia?',
-    'evidence-c': 'Quais formas de pagamento são aceitas?',
-    'evidence-d': 'Quando posso cancelar?',
-    'evidence-e': 'Quem realiza tratamento de canal?'
+    'evidence-a': 'How much does a consultation cost?',
+    'evidence-b': 'Who handles orthodontics?',
+    'evidence-c': 'What payment methods are accepted?',
+    'evidence-d': 'When can I cancel?',
+    'evidence-e': 'Who performs root canal treatment?'
   };
 
   for (const configuration of configurations) {
@@ -133,19 +133,19 @@ test('evidence support always returns a real retrieved chunk or null', async t =
 
 test('preset queries resolve to the intended stable evidence and unsupported queries resolve to null', () => {
   const cases = [
-    ['Quanto custa uma consulta?', 'evidence-a'],
-    ['Qual é o preço da consulta?', 'evidence-a'],
-    ['Quem atende ortodontia?', 'evidence-b'],
-    ['Quais formas de pagamento são aceitas?', 'evidence-c'],
-    ['Quando posso cancelar?', 'evidence-d'],
-    ['Quem realiza tratamento de canal?', 'evidence-e']
+    ['How much does a consultation cost?', 'evidence-a'],
+    ['What is the price of the consultation?', 'evidence-a'],
+    ['Who handles orthodontics?', 'evidence-b'],
+    ['What payment methods are accepted?', 'evidence-c'],
+    ['When can I cancel?', 'evidence-d'],
+    ['Who performs root canal treatment?', 'evidence-e']
   ];
 
   cases.forEach(([query, expectedId]) => {
     assert.equal(findEvidenceForQuery(query, evidenceCatalog)?.id, expectedId);
   });
-  assert.equal(findEvidenceForQuery('A clínica aceita convênio Unimed?', evidenceCatalog), null);
-  assert.equal(findEvidenceForQuery('Qual é o horário da clínica?', evidenceCatalog), null);
+  assert.equal(findEvidenceForQuery('Does the clinic accept Unimed insurance?', evidenceCatalog), null);
+  assert.equal(findEvidenceForQuery('What are the clinic opening hours?', evidenceCatalog), null);
 });
 
 test('cosine similarity preserves its mathematical range and endpoints', () => {
@@ -153,6 +153,39 @@ test('cosine similarity preserves its mathematical range and endpoints', () => {
   assert.equal(cosineSimilarity([1, 0], [-1, 0]), -1);
   assert.equal(cosineSimilarity([1, 0], [0, 1]), 0);
   assert.equal(cosineSimilarity([0, 0], [1, 0]), 0);
+});
+
+test('cosine similarity matches the mathematical definition for known vectors', () => {
+  assert.equal(cosineSimilarity([2, 0], [5, 0]), 1);
+  assert.equal(cosineSimilarity([1, 2, 3], [1, 2, 3]), 1);
+  assert.equal(cosineSimilarity([0, 0], [0, 0]), 0);
+  assert.equal(cosineSimilarity([1, 1, 1], [-1, -1, -1]), -1);
+
+  const angle45 = Math.SQRT1_2;
+  assert.ok(Math.abs(cosineSimilarity([1, 0], [angle45, angle45]) - angle45) < 1e-12);
+});
+
+test('clearly different vectors receive a low cosine similarity', () => {
+  assert.ok(cosineSimilarity([1, 0, 0], [0, 1, 0]) < 0.01);
+  assert.ok(cosineSimilarity([1, 2, 3], [3, 2, 1]) < cosineSimilarity([1, 2, 3], [1, 2, 3]));
+});
+
+test('the educationally simulated vectors rank the evidence chunk first for its query', () => {
+  const chunks = createChunks(documentText, 140, 30);
+  const queries = {
+    'evidence-a': 'How much does a consultation cost?',
+    'evidence-b': 'Who handles orthodontics?',
+    'evidence-c': 'What payment methods are accepted?',
+    'evidence-d': 'When can I cancel?',
+    'evidence-e': 'Who performs root canal treatment?'
+  };
+
+  for (const evidence of evidenceCatalog) {
+    const ranked = rankChunks(chunks, queries[evidence.id]);
+    const topEvidenceChunk = ranked.find(chunk => chunk.text.includes(evidence.text));
+    assert.ok(topEvidenceChunk, `${evidence.id} text should appear in the retrieved context`);
+    assert.equal(topEvidenceChunk.id, ranked[0].id, `${evidence.id} chunk should rank first for its query`);
+  }
 });
 
 test('token estimate is explicitly based on selected text length', () => {

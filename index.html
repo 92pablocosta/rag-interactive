@@ -3,8 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Basic RAG Learn Module | RAG Interactive</title>
+  <title>Learn RAG from the inside out | RAG Interactive</title>
   <meta name="description" content="Learn the Basic RAG pipeline visually—from documents and chunks to retrieval, context, prompts, and grounded answers.">
+  <link rel="canonical" href="https://www.rag-interactive.com/">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RAG Interactive">
+  <meta property="og:title" content="Learn RAG from the inside out | RAG Interactive">
+  <meta property="og:description" content="Learn the Basic RAG pipeline visually—from documents and chunks to retrieval, context, prompts, and grounded answers.">
+  <meta property="og:url" content="https://www.rag-interactive.com/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Learn RAG from the inside out | RAG Interactive">
+  <meta name="twitter:description" content="Learn the Basic RAG pipeline visually—from documents and chunks to retrieval, context, prompts, and grounded answers.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,7 +29,7 @@
       </div>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#hero" class="nav-link active" aria-current="page">Learn</a>
-        <a href="v1/index.html" class="nav-link nav-lab-btn"><span class="nav-lab-wide">Open </span>Lab →</a>
+        <a href="lab/index.html" class="nav-link nav-lab-btn"><span class="nav-lab-wide">Open </span>Lab →</a>
       </nav>
     </div>
     <div class="mobile-progress" aria-label="Learning progress">
@@ -62,7 +73,7 @@
 
         <div class="hero-actions">
           <a href="#problem" class="btn btn-primary">Start learning</a>
-          <a href="v1/index.html" class="btn btn-secondary">Explore the Lab</a>
+          <a href="lab/index.html" class="btn btn-secondary">Explore the Lab</a>
         </div>
 
         <!-- High-level flow preview -->
@@ -91,7 +102,7 @@
           <div class="card-badge badge-red">Without RAG</div>
           <div class="chat-bubble user-bubble">
             <span class="bubble-role">User</span>
-            <p>“Quanto custa a consulta na DentCare?”</p>
+            <p>“How much does a consultation at DentCare cost?”</p>
           </div>
           <div class="chat-bubble ai-bubble error-state">
             <span class="bubble-role">LLM (Knowledge Cutoff)</span>
@@ -106,15 +117,15 @@
           <div class="evidence-box">
             <span class="evidence-identity">Evidence A</span>
             <span class="evidence-tag">Consultation price · External evidence provided</span>
-            <p>“A consulta odontológica inicial custa R$ 250.”</p>
+            <p>“The initial dental consultation costs R$ 250.”</p>
           </div>
           <div class="chat-bubble user-bubble">
             <span class="bubble-role">User</span>
-            <p>“Quanto custa a consulta na DentCare?”</p>
+            <p>“How much does a consultation at DentCare cost?”</p>
           </div>
           <div class="chat-bubble ai-bubble success-state">
             <span class="bubble-role">LLM (Augmented with Evidence)</span>
-            <p>“A consulta odontológica inicial custa R$ 250.”</p>
+            <p>“The initial dental consultation costs R$ 250.”</p>
           </div>
         </div>
       </div>
@@ -140,12 +151,12 @@
             <span class="badge-neutral">Plain Text Source</span>
           </div>
           <div class="doc-body" id="raw-doc-text">
-            <p>A clínica DentCare funciona de segunda a sexta-feira, das 8h às 18h.</p>
-            <p class="document-evidence"><span class="evidence-identity">Evidence A</span><mark>A consulta odontológica inicial custa R$ 250.</mark></p>
-            <p>A Dra. Ana é especialista em ortodontia e atende às terças e quintas.</p>
-            <p>O Dr. Carlos realiza tratamentos de canal e procedimentos de endodontia.</p>
-            <p>Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.</p>
-            <p>A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.</p>
+            <p>DentCare Clinic is open from Monday to Friday, from 8 AM to 6 PM.</p>
+            <p class="document-evidence"><span class="evidence-identity">Evidence A</span><mark>The initial dental consultation costs R$ 250.</mark></p>
+            <p>Dr. Ana is an orthodontics specialist and works on Tuesdays and Thursdays.</p>
+            <p>Dr. Carlos performs root canal treatments and endodontics procedures.</p>
+            <p>Cancellations must be made at least 24 hours in advance.</p>
+            <p>The clinic accepts payments via PIX, credit card, and debit card.</p>
           </div>
           <div class="doc-footer-notes">
             <ul>
@@ -162,12 +173,12 @@
               <span class="code-lang">python</span>
             </div>
             <pre class="code-content"><code><span class="code-var">document</span> = <span class="code-str">"""
-A clínica DentCare funciona de segunda a sexta-feira, das 8h às 18h.
-A consulta odontológica inicial custa R$ 250.
-A Dra. Ana é especialista em ortodontia e atende às terças e quintas.
-O Dr. Carlos realiza tratamentos de canal e procedimentos de endodontia.
-Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.
-A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
+DentCare Clinic is open from Monday to Friday, from 8 AM to 6 PM.
+The initial dental consultation costs R$ 250.
+Dr. Ana is an orthodontics specialist and works on Tuesdays and Thursdays.
+Dr. Carlos performs root canal treatments and endodontics procedures.
+Cancellations must be made at least 24 hours in advance.
+The clinic accepts payments via PIX, credit card, and debit card.
 """</span></code></pre>
           </div>
         </div>
@@ -229,7 +240,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
         <div class="evidence-registry-card">
           <span class="evidence-registry-label">Stable evidence identity</span>
           <strong>Evidence A — Consultation price</strong>
-          <p>“A consulta odontológica inicial custa R$ 250.”</p>
+          <p>“The initial dental consultation costs R$ 250.”</p>
           <span class="evidence-registry-status" id="evidence-a-status" aria-live="polite">Resolving current chunk and retrieval status…</span>
         </div>
 
@@ -310,25 +321,25 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
         <div class="query-input-panel">
           <label for="user-query-input" class="control-label">User Question (Query):</label>
           <div class="input-with-button">
-            <input type="text" id="user-query-input" value="Quanto custa uma consulta?" placeholder="Type or choose a question...">
+            <input type="text" id="user-query-input" value="How much does a consultation cost?" placeholder="Type or choose a question...">
             <button id="btn-vectorize-query" class="btn btn-blue">Embed Query →</button>
           </div>
 
           <div class="query-presets">
             <span class="presets-label">Preset Questions:</span>
-            <button class="q-preset-btn active" data-q="Quanto custa uma consulta?" aria-pressed="true">1. Preço da consulta</button>
-            <button class="q-preset-btn" data-q="Quem atende ortodontia?" aria-pressed="false">2. Ortodontia</button>
-            <button class="q-preset-btn" data-q="Quais formas de pagamento são aceitas?" aria-pressed="false">3. Formas de pagamento</button>
-            <button class="q-preset-btn" data-q="Quando posso cancelar?" aria-pressed="false">4. Cancelamento (24h)</button>
-            <button class="q-preset-btn" data-q="Quem realiza tratamento de canal?" aria-pressed="false">5. Tratamento de canal</button>
-            <button class="q-preset-btn q-preset-out-of-domain" data-q="A clínica aceita convênio Unimed?" aria-pressed="false">6. Convênios · Out-of-domain test</button>
+            <button class="q-preset-btn active" data-q="How much does a consultation cost?" aria-pressed="true">1. Consultation price</button>
+            <button class="q-preset-btn" data-q="Who handles orthodontics?" aria-pressed="false">2. Orthodontics</button>
+            <button class="q-preset-btn" data-q="What payment methods are accepted?" aria-pressed="false">3. Payment methods</button>
+            <button class="q-preset-btn" data-q="When can I cancel?" aria-pressed="false">4. Cancellation (24h)</button>
+            <button class="q-preset-btn" data-q="Who performs root canal treatment?" aria-pressed="false">5. Root canal</button>
+            <button class="q-preset-btn q-preset-out-of-domain" data-q="Does the clinic accept Unimed insurance?" aria-pressed="false">6. Health insurance · Out-of-domain test</button>
           </div>
         </div>
 
         <div class="query-transform-flow">
           <div class="query-box">
             <span class="q-label">Query Text</span>
-            <span class="q-text" id="display-query-text">“Quanto custa uma consulta?”</span>
+            <span class="q-text" id="display-query-text">“How much does a consultation cost?”</span>
           </div>
           <div class="arrow-down">↓</div>
           <div class="vector-box">
@@ -555,7 +566,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
 
           <div class="prompt-block block-question">
             <span class="block-label">3. USER QUESTION</span>
-            <p id="prompt-question-preview">“Quanto custa uma consulta?”</p>
+            <p id="prompt-question-preview">“How much does a consultation cost?”</p>
           </div>
           </div>
           <div class="assembly-connector" aria-hidden="true"><span></span><b>→</b></div>
@@ -595,11 +606,11 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
           <div class="gen-body">
             <div class="llm-response-box">
               <span class="llm-tag">Simulated LLM Output</span>
-              <p class="answer-text" id="final-answer-text">“A consulta odontológica inicial custa R$ 250.”</p>
+              <p class="answer-text" id="final-answer-text">“The initial dental consultation costs R$ 250.”</p>
 
               <div class="answer-evidence" id="answer-evidence" aria-live="polite">
                 <div><span class="evidence-identity">Evidence A</span><strong>Consultation price</strong></div>
-                <blockquote id="answer-evidence-quote">“A consulta odontológica inicial custa R$ 250.”</blockquote>
+                <blockquote id="answer-evidence-quote">“The initial dental consultation costs R$ 250.”</blockquote>
                 <span id="answer-evidence-location">Currently in Chunk 02 · Included in context</span>
               </div>
 
@@ -743,7 +754,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
         <p class="future-modules-note">Future modules will cover Hybrid Retrieval, Reranking, and Evaluation as separate advanced topics.</p>
 
         <div class="transition-actions">
-          <a href="v1/index.html" class="btn btn-large-primary">Continue in RAG Interactive Lab →</a>
+          <a href="lab/index.html" class="btn btn-large-primary">Continue in RAG Interactive Lab →</a>
         </div>
         <p class="coming-next-note">Build it in Python · Coming next</p>
       </div>
@@ -752,6 +763,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
 
   <footer class="app-footer">
     <p><strong>RAG Interactive</strong> · Learn visually · Experiment in the Lab · Built with native web standards</p>
+    <p class="footer-attribution">Built by <a href="https://github.com/92pablocosta" rel="author">Pablo Costa</a> · <a href="https://github.com/92pablocosta/rag-interactive" rel="noopener" target="_blank">Source code</a></p>
   </footer>
 
   <script src="rag-core.js"></script>

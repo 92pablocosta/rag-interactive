@@ -2,9 +2,9 @@
 
 **Learn Retrieval-Augmented Generation by seeing how information moves through the system.**
 
-[rag-interactive.com](https://rag-interactive.com)
+[www.rag-interactive.com](https://www.rag-interactive.com)
 
-RAG Interactive is an open educational project that explains Retrieval-Augmented Generation (RAG) through visual lessons, interactive experiments, and side-by-side Python examples. The current experience focuses on **Module 01 — Basic RAG** and includes an earlier experimental debugger under `v1/`.
+RAG Interactive is an open educational project that explains Retrieval-Augmented Generation (RAG) through visual lessons, interactive experiments, and side-by-side Python examples. The current experience focuses on **Module 01 — Basic RAG** and includes the interactive **Lab** debugger under `lab/`.
 
 > Project status: early-stage and under active development. The current implementation is an educational front-end, not a production RAG system.
 
@@ -67,9 +67,9 @@ The main page contains the initial **Basic RAG** learning journey. It covers:
 - deterministic simulated generation with strict evidence grounding and safe unsupported-query states;
 - an animated complete-pipeline walkthrough with separate indexing and online-query paths;
 - compact conceptual Python blocks beside each computational stage; and
-- an English-only interface while complete translation remains future work.
+- an English-only interface.
 
-The `v1/` directory contains an earlier **RAG Lab** experiment. It lets learners choose a sample or custom document, change chunk size, overlap, Top-K, and query text, then inspect generated chunks, a heuristic similarity ranking, the assembled prompt, and a simulated answer.
+The `lab/` directory contains the **RAG Interactive Lab** — a debugging playground for Module 01. It reuses the same simulated vectors, real cosine similarity, and evidence-based grounding as Learn. Learners choose a sample or custom document, change chunk size, overlap, Top-K, and query text, then inspect generated chunks, a dense cosine-similarity ranking, the assembled prompt, and a grounded or refused answer. Out-of-domain and low-confidence queries are refused with an insufficient-evidence state instead of inventing facts.
 
 ## Learning flow
 
@@ -120,8 +120,10 @@ RAG Interactive is designed around three complementary experiences:
 | Experience | Purpose | Current state |
 | --- | --- | --- |
 | **Learn** | A guided visual journey from individual concepts to the complete architecture. | Initial Basic RAG module implemented. |
-| **Lab** | A playground/debugger for changing parameters and inspecting intermediate values. | Early experiment available under `v1/`. |
+| **Lab** | A playground/debugger for changing parameters and inspecting intermediate values. | Implemented in `lab/`, sharing the Learn vector, similarity, and grounding model. |
 | **Build** | A hands-on Python environment where learners implement RAG components. | Planned; not implemented. |
+
+Learn and the Lab link to each other from the navigation bar and from the Learn hero and transition sections, using product terminology rather than internal version names. Build is shown only as future functionality; no Build page exists yet, so nothing links to one.
 
 ## Interactive examples
 
@@ -154,6 +156,8 @@ Current accessibility support includes:
 - semantic labels for controls and visual regions; and
 - reduced-motion behavior for users who request it.
 
+The Lab reuses the same design tokens, focus styles, and responsive breakpoints, and announces its generated chunks, similarity ranking, prompt, and answer regions with `aria-live` so state changes are readable by assistive technology.
+
 These behaviors are covered by structural tests and code inspection. A manual visual and keyboard pass in a real browser is still recommended before publication, particularly at desktop, tablet, and mobile breakpoints; the integrated browser was unavailable during the latest verification pass.
 
 ## Python-first learning
@@ -164,7 +168,7 @@ These examples connect visual behavior to familiar RAG implementation patterns. 
 
 ## Educational simulations
 
-Educational simulations are used where running real embedding models or LLMs would add unnecessary infrastructure to the introductory learning experience. The current Learn module deterministically simulates educational feature vectors, dense cosine retrieval, approximate token counts, LLM responses, and grounding.
+Educational simulations are used where running real embedding models or LLMs would add unnecessary infrastructure to the introductory learning experience. Learn and the Lab both rely on deterministic simulations of educational feature vectors, dense cosine retrieval, approximate token counts, LLM responses, and grounding. The similarity ranking shown in both experiences is a real cosine-similarity calculation over those simulated vectors.
 
 These simulations teach how information and decisions move through the pipeline; they are not production-grade machine-learning implementations. The browser vectors are handcrafted educational features rather than model-produced embeddings, and the 2D chart is an illustrative projection rather than PCA. Cosine similarity retains its mathematical range of -1 to 1, while the geometry view is driven by the dense cosine score; its manual angle control is an isolated visual sandbox and does not change retrieval.
 
@@ -209,38 +213,50 @@ python3 -m http.server 8000
 
 Then visit [http://localhost:8000](http://localhost:8000). The server is optional; it does not add a backend to the application.
 
+## Deployment
+
+The public site is served from the canonical domain [https://www.rag-interactive.com](https://www.rag-interactive.com). Deployment is configured outside this repository (for example, on the hosting platform's Vercel project), not through files in the repo. That platform configuration should point the custom domain at `www.rag-interactive.com`, and any legacy `rag-interactive.vercel.app` URL should be redirected to the canonical host. The repository itself contains no deployment configuration or redirect rules.
+
 ## Running tests
 
-The testable RAG logic is isolated in `rag-core.js` and uses only Node.js built-in modules. No package installation is required.
+The testable RAG logic is isolated in `rag-core.js`, which both Learn and the Lab load in the browser, and uses only Node.js built-in modules. No package installation is required.
 
 ```bash
 node --check script.js
 node --check rag-core.js
+node --check lab/lab.js
 node --check tests/rag-core.test.js
 node --check tests/ui-contract.test.js
+node --check tests/lab-contract.test.js
+node --check tests/publication-contract.test.js
 node --test tests/*.test.js
 ```
 
-The current suite contains 25 passing tests covering chunk presets and boundary values, incompatible overlap adjustment, complete document reconstruction, canonical evidence lookup, supported and unsupported queries, Top-K values of 1, 3, and 5, citation integrity, cosine-similarity endpoints, token estimates, and UI contracts for branding, narrative phases, accessibility, and responsive orientation.
+The current suite contains 45 passing tests covering chunk presets and boundary values, incompatible overlap adjustment, complete document reconstruction, canonical evidence lookup, supported and unsupported queries, Top-K values of 1, 3, and 5, citation integrity, cosine-similarity endpoints and known-vector math, evidence-chunk ranking, token estimates, UI contracts for branding, narrative phases, accessibility, responsive orientation (including the viewport-safe content wrapper), the Lab page, the absence of version branding and unsafe HTML rendering, and publication contracts for canonical URLs, metadata, favicon, robots.txt, sitemap, and link integrity.
 
-The latest Module 01 verification also checked JavaScript syntax, HTML structure and unique IDs, JavaScript-to-DOM references, CSS brace structure, whitespace, overflow protections, keyboard and reduced-motion contracts, and successful local HTTP responses for the HTML, CSS, and JavaScript assets. The advanced-module content remained absent from Learn, and `v1/` remained unchanged. These programmatic and structural checks complement—not replace—visual browser testing.
+The latest verification pass also checked JavaScript syntax across Learn and the Lab, HTML structure and unique IDs, JavaScript-to-DOM references for both pages, CSS brace structure, overflow protections, keyboard and reduced-motion contracts, successful local HTTP responses for every HTML, CSS, and JavaScript asset, and publication metadata (canonical URLs, Open Graph, favicon paths, robots.txt, and sitemap). The Lab was consolidated into the RAG Interactive identity under `lab/`, the earlier `v1/` experiment was removed, and the advanced-module content remained absent from Learn. These programmatic and structural checks complement—not replace—visual browser testing.
 
 ## Project structure
 
 ```text
 .
 ├── index.html       # Guided Module 01 learning content and interface
-├── styles.css       # Layout, responsive styling, and visual states for Learn
-├── rag-core.js      # Testable chunking, vector, evidence, and token helpers
+├── styles.css       # Shared design system, layout, and visual states for Learn and Lab
+├── rag-core.js      # Testable chunking, vector, similarity, evidence, and token helpers
 ├── script.js        # Learn UI orchestration and deterministic simulations
+├── favicon.svg      # R·I brand favicon (SVG, shared by Learn and Lab)
+├── robots.txt       # Minimal crawler policy referencing the sitemap
+├── sitemap.xml      # Public pages: Learn / and Lab /lab/
+├── lab/
+│   ├── index.html   # RAG Interactive Lab debugging playground
+│   ├── lab.css      # Lab layout and debugger components (uses shared design tokens)
+│   └── lab.js       # Lab controls, cosine ranking, prompt assembly, and grounding
 ├── tests/
-│   ├── rag-core.test.js     # Node test suite for the reusable RAG core
-│   └── ui-contract.test.js  # Structural UI, accessibility, and responsive contracts
-├── README.md        # Project documentation
-└── v1/
-    ├── index.html   # Earlier RAG Lab/debugger interface
-    ├── styles.css   # Lab-specific styling
-    └── script.js    # Lab controls, pipeline inspection, and simulations
+│   ├── rag-core.test.js          # Node test suite for the reusable RAG core
+│   ├── ui-contract.test.js       # Structural UI, accessibility, and responsive contracts
+│   ├── lab-contract.test.js      # Lab branding, language, navigation, and safety contracts
+│   └── publication-contract.test.js  # Canonical URLs, metadata, favicon, SEO, and link integrity
+└── README.md        # Project documentation
 ```
 
 No generated assets or dependency directories are required to run the current project.
@@ -266,7 +282,7 @@ Future product ideas also include:
 - hands-on Python implementation exercises for Build;
 - optional integrations with real embedding providers and vector databases;
 - evaluation experiments backed by actual evaluation tooling; and
-- additional examples, accessibility improvements, and translations.
+- additional examples and accessibility improvements.
 
 These items describe direction, not delivery commitments.
 
@@ -307,14 +323,14 @@ Contributions are welcome, especially in these areas:
 - accessibility and responsive behavior;
 - clearer visual explanations and examples;
 - Python exercises and implementation notes;
-- English and Portuguese copy, plus additional translations; and
+- English copy and future localizations; and
 - bug fixes and small usability improvements.
 
 There is no formal contribution guide yet. Before opening a large change, consider starting with an issue or discussion explaining the learning problem, proposed behavior, and technical trade-offs. Keep changes focused and distinguish educational simplifications from real implementations.
 
 ## Status
 
-RAG Interactive is an early-stage educational project under active development. Module 01 and the experimental Lab are usable prototypes, but interfaces, examples, terminology, and roadmap priorities may change. Complete translation and the future advanced learning modules remain outside the current Basic RAG experience.
+RAG Interactive is an early-stage educational project under active development. Module 01 and the Lab are usable prototypes, but interfaces, examples, terminology, and roadmap priorities may change. The future advanced learning modules remain outside the current Basic RAG experience.
 
 ## License
 

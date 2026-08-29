@@ -55,3 +55,7 @@ test('responsive orientation contracts cover requested widths', () => {
   assert.match(html, /Scroll horizontally inside a pipeline row/);
   assert.match(html, /Scroll horizontally to inspect the full projection/);
 });
+
+test('the Learn content wrapper does not expand beyond the viewport on small screens', () => {
+  assert.match(css, /\.content-wrapper\s*\{[\s\S]*?width:\s*100%/);
+});

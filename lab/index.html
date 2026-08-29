@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab | RAG Interactive</title>
+  <meta name="description" content="Experiment with RAG in the RAG Interactive Lab: adjust chunking, overlap, Top-K, and queries, then inspect chunks, real cosine similarity, the assembled prompt, and grounded answers.">
+  <link rel="canonical" href="https://www.rag-interactive.com/lab/">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RAG Interactive">
+  <meta property="og:title" content="Lab | RAG Interactive">
+  <meta property="og:description" content="Experiment with RAG in the RAG Interactive Lab: adjust chunking, overlap, Top-K, and queries, then inspect chunks, real cosine similarity, the assembled prompt, and grounded answers.">
+  <meta property="og:url" content="https://www.rag-interactive.com/lab/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Lab | RAG Interactive">
+  <meta name="twitter:description" content="Experiment with RAG in the RAG Interactive Lab: adjust chunking, overlap, Top-K, and queries, then inspect chunks, real cosine similarity, the assembled prompt, and grounded answers.">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="lab.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-logo" aria-hidden="true">R·I</div>
+        <span class="brand-name">RAG Interactive</span>
+        <span class="module-badge">Lab</span>
+      </div>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="../index.html" class="nav-link">Learn</a>
+        <a href="index.html" class="nav-link active" aria-current="page">Lab</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="lab-container">
+    <aside class="lab-sidebar" aria-label="Lab controls">
+      <h2 class="lab-heading">Pipeline Controls</h2>
+
+      <div class="control-group">
+        <label for="lab-doc-select">Source document</label>
+        <select id="lab-doc-select">
+          <option value="dentcare">DentCare Clinic (Dentistry)</option>
+          <option value="custom">Custom text...</option>
+        </select>
+      </div>
+
+      <div class="control-group hidden" id="custom-doc-group">
+        <label for="lab-custom-text">Custom document text</label>
+        <textarea id="lab-custom-text" rows="6" placeholder="Paste your own source text here..."></textarea>
+      </div>
+
+      <div class="control-group">
+        <label for="lab-chunk-size">Chunk size (chars): <span id="val-chunk-size">140</span></label>
+        <input type="range" id="lab-chunk-size" min="40" max="300" step="10" value="140">
+      </div>
+
+      <div class="control-group">
+        <label for="lab-overlap">Overlap (chars): <span id="val-overlap">30</span></label>
+        <input type="range" id="lab-overlap" min="0" max="100" step="5" value="30">
+      </div>
+
+      <div class="control-group">
+        <label for="lab-top-k">Top-K retrieval: <span id="val-top-k">3</span></label>
+        <input type="range" id="lab-top-k" min="1" max="5" step="1" value="3">
+      </div>
+
+      <div class="control-group">
+        <label for="lab-query">Test question</label>
+        <input type="text" id="lab-query" value="How much does a consultation cost?">
+      </div>
+
+      <div class="query-presets">
+        <span class="presets-label">Preset questions:</span>
+        <button class="q-preset-btn active" data-q="How much does a consultation cost?" aria-pressed="true">1. Consultation price</button>
+        <button class="q-preset-btn" data-q="Who handles orthodontics?" aria-pressed="false">2. Orthodontics</button>
+        <button class="q-preset-btn" data-q="What payment methods are accepted?" aria-pressed="false">3. Payment methods</button>
+        <button class="q-preset-btn" data-q="When can I cancel?" aria-pressed="false">4. Cancellation (24h)</button>
+        <button class="q-preset-btn" data-q="Who performs root canal treatment?" aria-pressed="false">5. Root canal</button>
+        <button class="q-preset-btn q-preset-out-of-domain" data-q="Does the clinic accept Unimed insurance?" aria-pressed="false">6. Health insurance · Out-of-domain</button>
+      </div>
+
+      <button id="btn-run-debug" class="btn btn-primary">Run pipeline debugger</button>
+    </aside>
+
+    <section class="debugger-view" aria-label="Lab debugger output">
+      <div class="debug-card">
+        <h3>1. Generated Chunks (<span id="count-chunks">0</span>)</h3>
+        <p class="debug-card-note">Chunking uses the same lossless character-based splitter as Learn. Evidence badges appear when a chunk fully contains or intersects a canonical evidence passage.</p>
+        <div id="debug-chunks-list" class="chunks-grid"></div>
+      </div>
+
+      <div class="debug-card">
+        <h3>2. Cosine Similarity Ranking</h3>
+        <p class="debug-card-note">Real cosine similarity over simulated educational feature vectors: cos(θ) = (u · v) / (||u|| ||v||). Rows in the Top-K window are highlighted.</p>
+        <div id="debug-similarity-list" class="sim-list"></div>
+      </div>
+
+      <div class="debug-card">
+        <h3>3. Assembled Prompt (System + Context + Query)</h3>
+        <pre id="debug-prompt-output" class="code-block" aria-live="polite"></pre>
+      </div>
+
+      <div class="debug-card">
+        <h3>4. Generated Answer &amp; Grounding</h3>
+        <p class="debug-card-note">An answer is grounded only when a retrieved chunk contains the complete canonical evidence. Out-of-domain and low-confidence queries are refused instead of inventing facts.</p>
+        <div id="debug-answer-output" class="answer-box" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p><strong>RAG Interactive</strong> · Learn visually · Experiment in the Lab · Built with native web standards</p>
+    <p class="footer-attribution">Built by <a href="https://github.com/92pablocosta" rel="author">Pablo Costa</a> · <a href="https://github.com/92pablocosta/rag-interactive" rel="noopener" target="_blank">Source code</a></p>
+  </footer>
+
+  <script src="../rag-core.js"></script>
+  <script src="lab.js"></script>
+</body>
+</html>

@@ -126,12 +126,12 @@
   }
 
   const educationalDimensions = {
-    price: ['cust', 'prec', 'valor', '250', 'pag', 'dinheir', 'taxa', 'custo', 'consulta'],
-    schedule: ['horari', 'funcion', 'segund', 'sext', '8h', '18h', 'atend', 'dia', 'hora', 'abert'],
-    ortho: ['ana', 'ortodont', 'aparelh', 'terc', 'quint', 'dente', 'dra'],
-    endo: ['carlos', 'canal', 'endodont', 'dr', 'tratament', 'procediment'],
-    cancel: ['cancel', 'anteced', '24', 'hora', 'desmarc', 'reagend'],
-    payment: ['pix', 'carta', 'credit', 'debit', 'pagament', 'dinheir', 'form']
+    price: ['cost', 'price', 'consult', '250', 'fee', 'charge', 'amount'],
+    schedule: ['open', 'monday', 'friday', 'am', 'pm', 'work', 'hour', 'time', 'clinic'],
+    ortho: ['ana', 'orthodont', 'braces', 'tues', 'thurs'],
+    endo: ['carlos', 'canal', 'endodont', 'dr', 'treatment', 'procedure', 'root'],
+    cancel: ['cancel', 'advance', '24', 'hour', 'reschedul', 'appoint'],
+    payment: ['pix', 'card', 'credit', 'debit', 'payment', 'accept', 'method']
   };
 
   function computeEducationalVector(text) {
