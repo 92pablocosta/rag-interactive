@@ -16,22 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     estimateTokens
   } = window.RagCore;
 
-  const i18n = {
-    en: {
-      groundingVerified: 'Grounding verified',
-      unsupportedQuery: 'Information unavailable: no canonical evidence is defined for this question.',
-      evidenceSplit: 'The required evidence is split across chunks, so no retrieved chunk contains the complete fact.',
-      evidenceExcluded: 'The complete evidence exists in the document but was not included in the active Top-K context.'
-    },
-    pt: {
-      groundingVerified: 'Fundamentação verificada',
-      unsupportedQuery: 'Informação indisponível: nenhuma evidência canônica foi definida para esta pergunta.',
-      evidenceSplit: 'A evidência necessária foi dividida entre chunks; nenhum chunk recuperado contém o fato completo.',
-      evidenceExcluded: 'A evidência completa existe no documento, mas não foi incluída no contexto Top-K ativo.'
-    }
+  const messages = {
+    groundingVerified: 'Grounding verified',
+    unsupportedQuery: 'Information unavailable: no canonical evidence is defined for this question.',
+    evidenceSplit: 'The required evidence is split across chunks, so no retrieved chunk contains the complete fact.',
+    evidenceExcluded: 'The complete evidence exists in the document but was not included in the active Top-K context.'
   };
-
-  let currentLang = 'en';
 
   const state = {
     documentText: `A clínica DentCare funciona de segunda a sexta-feira, das 8h às 18h.
@@ -48,6 +38,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     topK: 3,
     rankedChunks: [],
     retrievedChunks: [],
+    selectedSimilarityChunkId: null,
     sourceChunkId: null,
     pipelineStep: -1,
     pipelineTimer: null
@@ -108,6 +99,8 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
   const svgSpace = document.getElementById('vector-space-svg');
   const svgTooltip = document.getElementById('vector-space-tooltip');
   const embeddingInspector = document.getElementById('embedding-inspector');
+  const embeddingChunkCount = document.getElementById('embedding-chunk-count');
+  const embeddingVectorPreview = document.getElementById('embedding-vector-preview');
   const userQueryInput = document.getElementById('user-query-input');
   const btnVectorizeQuery = document.getElementById('btn-vectorize-query');
   const qPresetBtns = document.querySelectorAll('.q-preset-btn');
@@ -121,6 +114,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
   const sliderAngleAdjust = document.getElementById('slider-angle-adjust');
   const labelAngleSlider = document.getElementById('label-angle-slider');
   const angleFormulaText = document.getElementById('angle-formula-text');
+  const angleComparedChunk = document.getElementById('angle-compared-chunk');
   const sliderTopK = document.getElementById('slider-top-k');
   const valTopK = document.getElementById('val-top-k');
   const pyTopK = document.getElementById('py-top-k');
@@ -130,20 +124,31 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
   const metricContextChars = document.getElementById('metric-context-chars');
   const metricTokens = document.getElementById('metric-tokens');
   const contextBufferOutput = document.getElementById('context-buffer-output');
+  const contextSelectedList = document.getElementById('context-selected-list');
   const promptContextPreview = document.getElementById('prompt-context-preview');
   const promptQuestionPreview = document.getElementById('prompt-question-preview');
   const finalAnswerText = document.getElementById('final-answer-text');
   const sourceCitationBtn = document.getElementById('source-citation-btn');
   const groundingStatusBox = document.getElementById('grounding-status-box');
   const groundingStatusMsg = document.getElementById('grounding-status-msg');
+  const groundingStatusSymbol = document.getElementById('grounding-status-symbol');
+  const answerEvidence = document.getElementById('answer-evidence');
+  const answerEvidenceQuote = document.getElementById('answer-evidence-quote');
+  const answerEvidenceLocation = document.getElementById('answer-evidence-location');
+  const sourceDetail = document.getElementById('source-detail');
+  const sourceDetailTitle = document.getElementById('source-detail-title');
+  const sourceDetailText = document.getElementById('source-detail-text');
   const btnRunPipeline = document.getElementById('btn-run-pipeline');
   const btnStepPipeline = document.getElementById('btn-step-pipeline');
   const btnResetPipeline = document.getElementById('btn-reset-pipeline');
   const pipelineStatusText = document.getElementById('pipeline-status-text');
   const progressFill = document.getElementById('progress-fill');
   const progressDots = document.querySelectorAll('.progress-dot');
-  const langBtnEn = document.getElementById('lang-en');
-  const langBtnPt = document.getElementById('lang-pt');
+  const mobileProgressFill = document.getElementById('mobile-progress-fill');
+  const mobileProgressLabel = document.getElementById('mobile-progress-label');
+  const pipelineEvidenceChunk = document.getElementById('pipeline-evidence-chunk');
+  const pipelineEvidenceTopK = document.getElementById('pipeline-evidence-topk');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function escapeHtml(value) {
     return String(value)
@@ -170,6 +175,39 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     return getEvidenceRelations(chunk).map(({ evidence, relation }) => (
       `<span class="evidence-badge ${relation}">${escapeHtml(evidence.label)}${relation === 'fragment' ? ' fragment' : ''}</span>`
     )).join('');
+  }
+
+  function renderChunkTextWithEvidence(chunk) {
+    const evidence = evidenceCatalog[0];
+    const evidenceStart = state.documentText.indexOf(evidence.text);
+    const evidenceEnd = evidenceStart + evidence.text.length;
+    const intersectionStart = Math.max(chunk.startOffset, evidenceStart);
+    const intersectionEnd = Math.min(chunk.endOffset, evidenceEnd);
+
+    if (evidenceStart < 0 || intersectionStart >= intersectionEnd) {
+      return escapeHtml(chunk.text);
+    }
+
+    const localStart = intersectionStart - chunk.startOffset;
+    const localEnd = intersectionEnd - chunk.startOffset;
+    return `${escapeHtml(chunk.text.slice(0, localStart))}<mark class="evidence-text-mark">${escapeHtml(chunk.text.slice(localStart, localEnd))}</mark>${escapeHtml(chunk.text.slice(localEnd))}`;
+  }
+
+  function setPressedState(buttons, activeButton) {
+    buttons.forEach(button => {
+      const isActive = button === activeButton;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  function pulseElements(...elements) {
+    elements.filter(Boolean).forEach(element => {
+      element.classList.remove('is-updating');
+      void element.offsetWidth;
+      element.classList.add('is-updating');
+      window.setTimeout(() => element.classList.remove('is-updating'), 240);
+    });
   }
 
   function syncChunkControls() {
@@ -203,23 +241,29 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
 
     if (state.chunkSize < 70) {
       chunkWarningBox.classList.remove('hidden');
-      chunkWarningBox.innerHTML = `⚠️ <strong>Fragmentation Warning:</strong> Chunk size is very small (${state.chunkSize} chars). Complete evidence may be split across chunks.`;
+      chunkWarningBox.innerHTML = `<strong>Fragmentation warning:</strong> Chunk size is very small (${state.chunkSize} chars). Complete evidence may be split across chunks.`;
     } else if (state.chunkSize > 240) {
       chunkWarningBox.classList.remove('hidden');
-      chunkWarningBox.innerHTML = `⚠️ <strong>Context Dilution Warning:</strong> Chunk size is large (${state.chunkSize} chars). Each retrieved chunk may contain unrelated information.`;
+      chunkWarningBox.innerHTML = `<strong>Context dilution warning:</strong> Chunk size is large (${state.chunkSize} chars). Each retrieved chunk may contain unrelated information.`;
     } else {
       chunkWarningBox.classList.add('hidden');
+      chunkWarningBox.textContent = '';
     }
 
-    state.chunks.forEach(chunk => {
+    state.chunks.forEach((chunk, index) => {
+      if (index > 0) {
+        const boundary = document.createElement('div');
+        boundary.className = 'chunk-boundary';
+        boundary.textContent = `cut at character ${chunk.startOffset} · ${chunk.overlapWithPrevious} repeated`;
+        chunksVisualList.appendChild(boundary);
+      }
+
       const card = document.createElement('div');
       card.className = 'chunk-card';
       card.id = `chunk-card-${chunk.id}`;
-      const overlapLength = state.showOverlap ? chunk.overlapWithNext : 0;
-      const mainLength = Math.max(0, chunk.text.length - overlapLength);
-      const contentHtml = overlapLength > 0
-        ? `${escapeHtml(chunk.text.slice(0, mainLength))}<span class="overlap-text">${escapeHtml(chunk.text.slice(mainLength))}</span>`
-        : escapeHtml(chunk.text);
+      const overlapText = state.showOverlap && chunk.overlapWithNext > 0
+        ? chunk.text.slice(-chunk.overlapWithNext)
+        : '';
 
       card.innerHTML = `
         <div class="chunk-card-header">
@@ -227,19 +271,26 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
           <span>${chunk.text.length} chars · ${chunk.overlapWithNext} overlap</span>
         </div>
         <div class="evidence-badges">${renderEvidenceBadges(chunk)}</div>
-        <div>${contentHtml}</div>
+        <div>${renderChunkTextWithEvidence(chunk)}</div>
+        ${overlapText ? `<div class="overlap-preview"><strong>Repeated next</strong><span>${escapeHtml(overlapText)}</span></div>` : ''}
       `;
       chunksVisualList.appendChild(card);
     });
+
+    embeddingChunkCount.textContent = String(state.chunks.length).padStart(2, '0');
+    embeddingVectorPreview.textContent = `[${state.chunks.slice(0, 2).map(chunk => `[${chunk.vector.slice(0, 2).map(value => value.toFixed(2)).join(', ')}, …]`).join(', ')}, …]`;
   }
 
   function updateRetrievalFlow() {
     const queryVector = computeEducationalVector(state.query);
     displayQueryVector.textContent = `[${queryVector.slice(0, 4).map(value => value.toFixed(3)).join(', ')}, ...]`;
-    renderVectorSpace(queryVector);
     state.rankedChunks = state.chunks
       .map(chunk => ({ ...chunk, score: cosineSimilarity(queryVector, chunk.vector) }))
       .sort((first, second) => second.score - first.score || first.id - second.id);
+    if (!state.rankedChunks.some(chunk => chunk.id === state.selectedSimilarityChunkId)) {
+      state.selectedSimilarityChunkId = state.rankedChunks[0]?.id ?? null;
+    }
+    renderVectorSpace(queryVector);
     renderSimilarity();
     renderAngleVisualizer();
     updateTopKFlow();
@@ -268,22 +319,38 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
       const chunkY = Math.round(200 - (chunk.vector[2] - chunk.vector[3] + (chunk.vector[5] || 0) * 0.5) * 160);
       const clampedX = Math.max(70, Math.min(630, chunkX));
       const clampedY = Math.max(70, Math.min(330, chunkY));
+      const evidenceRelations = getEvidenceRelations(chunk);
+      const evidenceARelation = evidenceRelations.find(relation => relation.evidence.id === 'evidence-a');
+      if (evidenceARelation) {
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', clampedX);
+        ring.setAttribute('cy', clampedY);
+        ring.setAttribute('r', 12);
+        ring.setAttribute('class', 'evidence-point-ring');
+        svgSpace.appendChild(ring);
+      }
+
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       circle.setAttribute('cx', clampedX);
       circle.setAttribute('cy', clampedY);
       circle.setAttribute('r', 7);
       circle.setAttribute('fill', '#8b5cf6');
-      circle.setAttribute('class', 'node-point');
+      circle.setAttribute('class', `node-point${chunk.id === state.selectedSimilarityChunkId ? ' is-selected' : ''}`);
       circle.setAttribute('tabindex', '0');
       circle.setAttribute('role', 'button');
-      circle.setAttribute('aria-label', `Inspect simulated vector for Chunk ${formatChunkId(chunk.id)}`);
+      circle.setAttribute('aria-label', `Inspect simulated vector for Chunk ${formatChunkId(chunk.id)}${evidenceARelation ? `, containing ${evidenceARelation.evidence.label} ${evidenceARelation.relation}` : ''}`);
 
       const inspectChunk = () => {
         embeddingInspector.innerHTML = `
           <h4>Chunk ${formatChunkId(chunk.id)} Simulated Vector</h4>
-          <p><strong>Educational feature coordinates:</strong> <code style="color:#06b6d4">[${chunk.vector.map(value => value.toFixed(3)).join(', ')}]</code></p>
-          <p style="margin-top:0.4rem; color:#cbd5e1;">${escapeHtml(chunk.text)}</p>
+          <div class="evidence-badges">${renderEvidenceBadges(chunk)}</div>
+          <p><strong>Educational feature coordinates:</strong> <code class="inspector-vector">[${chunk.vector.map(value => value.toFixed(3)).join(', ')}]</code></p>
+          <p class="inspector-copy">${renderChunkTextWithEvidence(chunk)}</p>
         `;
+        state.selectedSimilarityChunkId = chunk.id;
+        renderSimilarity();
+        delete sliderAngleAdjust.dataset.manual;
+        renderAngleVisualizer();
       };
 
       circle.addEventListener('mouseenter', event => {
@@ -306,7 +373,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
       label.setAttribute('x', clampedX + 10);
       label.setAttribute('y', clampedY + 4);
       label.setAttribute('class', 'node-label');
-      label.textContent = `Chunk ${formatChunkId(chunk.id)}`;
+      label.textContent = `Chunk ${formatChunkId(chunk.id)}${evidenceARelation ? ' · Evidence A' : ''}`;
       svgSpace.appendChild(label);
     });
 
@@ -318,10 +385,12 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     glow.setAttribute('r', 18);
     glow.setAttribute('fill', 'url(#queryGlow)');
     svgSpace.appendChild(glow);
-    const queryPoint = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    queryPoint.setAttribute('cx', clampedQueryX);
-    queryPoint.setAttribute('cy', clampedQueryY);
-    queryPoint.setAttribute('r', 8);
+    const queryPoint = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    queryPoint.setAttribute('x', clampedQueryX - 7);
+    queryPoint.setAttribute('y', clampedQueryY - 7);
+    queryPoint.setAttribute('width', 14);
+    queryPoint.setAttribute('height', 14);
+    queryPoint.setAttribute('transform', `rotate(45 ${clampedQueryX} ${clampedQueryY})`);
     queryPoint.setAttribute('fill', '#3b82f6');
     queryPoint.setAttribute('stroke', '#ffffff');
     queryPoint.setAttribute('stroke-width', '2');
@@ -332,35 +401,49 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     queryLabel.setAttribute('fill', '#60a5fa');
     queryLabel.setAttribute('font-weight', 'bold');
     queryLabel.setAttribute('font-size', '12');
-    queryLabel.textContent = '★ Simulated Query Vector';
+    queryLabel.textContent = 'Query vector ◆';
     svgSpace.appendChild(queryLabel);
   }
 
   function renderSimilarity() {
     similarityRankingList.innerHTML = '';
     state.rankedChunks.forEach((item, index) => {
-      const row = document.createElement('div');
-      row.className = 'rank-item-card';
+      const row = document.createElement('button');
+      const isCompared = item.id === state.selectedSimilarityChunkId;
+      row.type = 'button';
+      row.className = `rank-item-card${isCompared ? ' is-compared' : ''}`;
+      row.setAttribute('aria-pressed', String(isCompared));
+      row.setAttribute('aria-label', `Compare Chunk ${formatChunkId(item.id)}, dense cosine rank ${index + 1}, score ${item.score.toFixed(3)}`);
       const mappedWidth = Math.round(((item.score + 1) / 2) * 100);
       row.innerHTML = `
         <span class="rank-score-badge">${item.score.toFixed(3)}</span>
         <div class="rank-bar-wrapper">
-          <div style="display:flex; justify-content:space-between; gap:0.75rem; font-size:0.8rem;">
+          <div class="rank-heading">
             <strong>Chunk ${formatChunkId(item.id)}</strong>
-            <span style="color:var(--text-muted)">Dense cosine rank #${index + 1}</span>
+            <span class="rank-meta">Dense cosine rank #${index + 1}</span>
           </div>
           <div class="evidence-badges">${renderEvidenceBadges(item)}</div>
           <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${mappedWidth}%"></div></div>
-          <span class="rank-chunk-text">${escapeHtml(item.text)}</span>
+          <span class="rank-chunk-text">${renderChunkTextWithEvidence(item)}</span>
         </div>
       `;
+      row.addEventListener('click', () => {
+        state.selectedSimilarityChunkId = item.id;
+        delete sliderAngleAdjust.dataset.manual;
+        renderSimilarity();
+        renderAngleVisualizer();
+        renderVectorSpace(computeEducationalVector(state.query));
+        pulseElements(angleCircleSvg, row);
+      });
       similarityRankingList.appendChild(row);
     });
   }
 
   function renderAngleVisualizer() {
     angleCircleSvg.innerHTML = '';
-    const topCosine = state.rankedChunks[0]?.score ?? 0;
+    const comparedChunk = state.rankedChunks.find(chunk => chunk.id === state.selectedSimilarityChunkId) || state.rankedChunks[0];
+    const topCosine = comparedChunk?.score ?? 0;
+    angleComparedChunk.textContent = comparedChunk ? `Chunk ${formatChunkId(comparedChunk.id)}` : 'selected chunk';
     let radians = Math.acos(Math.max(-1, Math.min(1, topCosine)));
     let degrees = Math.round(radians * (180 / Math.PI));
     if (sliderAngleAdjust.dataset.manual === 'true') {
@@ -434,10 +517,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     metricContextChars.textContent = `${selectedText.length} chars`;
     metricTokens.textContent = `≈${estimateTokens(selectedText)} tokens`;
     renderTopK();
-    const context = state.retrievedChunks
-      .map(chunk => `[Chunk ${formatChunkId(chunk.id)}]\n${chunk.text}`)
-      .join('\n\n');
-    renderContextAndGeneration(context);
+    renderContextAndGeneration();
     renderEvidenceAStatus();
   }
 
@@ -445,16 +525,21 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     topkVisualList.innerHTML = '';
     state.rankedChunks.forEach((item, index) => {
       const isRetrieved = index < state.topK;
+      if (index === state.topK) {
+        const cutoff = document.createElement('div');
+        cutoff.className = 'topk-cutoff';
+        cutoff.textContent = `Top-K cutoff after rank ${state.topK}`;
+        topkVisualList.appendChild(cutoff);
+      }
       const row = document.createElement('div');
       row.className = `topk-item ${isRetrieved ? 'selected' : 'excluded'}`;
       row.innerHTML = `
         <div>
-          <strong>Chunk ${formatChunkId(item.id)}</strong>
-          <span class="badge-neutral" style="margin-left:0.5rem;">Cosine: ${item.score.toFixed(3)}</span>
+          <div class="topk-heading"><strong>Chunk ${formatChunkId(item.id)}</strong><span class="badge-neutral">Cosine: ${item.score.toFixed(3)}</span></div>
           <div class="evidence-badges">${renderEvidenceBadges(item)}</div>
-          <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.2rem;">${escapeHtml(item.text)}</p>
+          <p class="topk-copy">${renderChunkTextWithEvidence(item)}</p>
         </div>
-        <span style="font-weight:bold; font-size:0.8rem; color:${isRetrieved ? 'var(--color-context)' : 'var(--text-muted)'}">
+        <span class="retrieval-state">
           ${isRetrieved ? '✓ RETRIEVED' : '✕ EXCLUDED'}
         </span>
       `;
@@ -476,6 +561,8 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
         .map(chunk => `Chunk ${formatChunkId(chunk.id)}`)
         .join(', ');
       evidenceAStatus.textContent = `${evidence.label} is split across ${fragmentLabels || 'the current chunks'}. No chunk contains the complete evidence, so it cannot ground an answer.`;
+      pipelineEvidenceChunk.textContent = `${evidence.label} split across chunks`;
+      pipelineEvidenceTopK.textContent = `${evidence.label} cannot be grounded`;
       return;
     }
 
@@ -485,29 +572,53 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
       ? `Included in Top-K and context via Chunk ${formatChunkId(retrievedMatch.id)}.`
       : 'Not included in the active Top-K context.';
     evidenceAStatus.textContent = `${evidence.label} is currently in ${currentChunks}; dense rank ${ranking}. ${topKStatus}`;
+    pipelineEvidenceChunk.textContent = `${evidence.label} · ${currentChunks}`;
+    pipelineEvidenceTopK.textContent = retrievedMatch
+      ? `${evidence.label} selected`
+      : `${evidence.label} excluded`;
   }
 
-  function renderContextAndGeneration(context) {
-    contextBufferOutput.textContent = context || '(No chunks retrieved in context)';
-    promptContextPreview.textContent = context || '(No context)';
+  function renderContextAndGeneration() {
+    contextSelectedList.innerHTML = state.retrievedChunks.map(chunk => `
+      <article class="context-unit">
+        <strong>Chunk ${formatChunkId(chunk.id)}</strong>
+        <div class="evidence-badges">${renderEvidenceBadges(chunk)}</div>
+        <p>${renderChunkTextWithEvidence(chunk)}</p>
+      </article>
+    `).join('');
+    contextBufferOutput.innerHTML = state.retrievedChunks.length > 0
+      ? state.retrievedChunks.map(chunk => `
+        <div class="context-entry">
+          <strong>[Chunk ${formatChunkId(chunk.id)}]</strong>
+          <p>${renderChunkTextWithEvidence(chunk)}</p>
+        </div>
+      `).join('')
+      : '<p>(No chunks retrieved in context)</p>';
+    promptContextPreview.innerHTML = state.retrievedChunks.length > 0
+      ? state.retrievedChunks.map(chunk => `<p><strong>[Chunk ${formatChunkId(chunk.id)}]</strong> ${renderChunkTextWithEvidence(chunk)}</p>`).join('')
+      : '<p>(No context)</p>';
     promptQuestionPreview.textContent = `“${state.query}”`;
     state.sourceChunkId = null;
     sourceCitationBtn.disabled = true;
+    sourceCitationBtn.setAttribute('aria-expanded', 'false');
     sourceCitationBtn.textContent = 'No complete evidence in context';
+    sourceDetail.classList.add('hidden');
+    answerEvidence.classList.add('hidden');
     groundingStatusBox.className = 'grounding-status-banner retrieval-miss';
+    groundingStatusSymbol.textContent = '!';
 
     const evidence = findEvidenceForQuery(state.query, evidenceCatalog);
     const support = resolveEvidenceSupport(state.documentText, evidence, state.retrievedChunks);
     if (!evidence) {
-      finalAnswerText.textContent = `“${i18n[currentLang].unsupportedQuery}”`;
-      groundingStatusMsg.textContent = i18n[currentLang].unsupportedQuery;
+      finalAnswerText.textContent = `“${messages.unsupportedQuery}”`;
+      groundingStatusMsg.textContent = messages.unsupportedQuery;
       return;
     }
     if (!support.supported) {
       const documentLocation = locateEvidence(state.documentText, evidence, state.chunks);
       const message = documentLocation.containingChunks.length === 0
-        ? i18n[currentLang].evidenceSplit
-        : i18n[currentLang].evidenceExcluded;
+        ? messages.evidenceSplit
+        : messages.evidenceExcluded;
       finalAnswerText.textContent = `“${message}”`;
       groundingStatusMsg.textContent = `${evidence.label} — ${message}`;
       return;
@@ -515,34 +626,44 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
 
     state.sourceChunkId = support.sourceChunk.id;
     sourceCitationBtn.disabled = false;
-    sourceCitationBtn.textContent = `${evidence.label} — ${evidence.title} • Currently in Chunk ${formatChunkId(state.sourceChunkId)} 🔍`;
+    sourceCitationBtn.textContent = 'Inspect evidence details';
     groundingStatusBox.className = 'grounding-status-banner grounded';
-    groundingStatusMsg.textContent = `${i18n[currentLang].groundingVerified}: ${evidence.label} — ${evidence.title} is fully present in Chunk ${formatChunkId(state.sourceChunkId)} and in the active context.`;
+    groundingStatusSymbol.textContent = '✓';
+    groundingStatusMsg.textContent = `${messages.groundingVerified}: ${evidence.label} — ${evidence.title} is fully present in Chunk ${formatChunkId(state.sourceChunkId)} and in the active context.`;
     finalAnswerText.textContent = `“${evidence.text}”`;
+    answerEvidence.classList.remove('hidden');
+    answerEvidence.querySelector('.evidence-identity').textContent = evidence.label;
+    answerEvidence.querySelector('strong').textContent = evidence.title;
+    answerEvidenceQuote.textContent = `“${evidence.text}”`;
+    answerEvidenceLocation.textContent = `Currently in Chunk ${formatChunkId(state.sourceChunkId)} · Included in context`;
+    sourceDetailTitle.textContent = `${evidence.label} — ${evidence.title}`;
+    sourceDetailText.textContent = `Loaded from the DentCare source document, preserved completely inside Chunk ${formatChunkId(state.sourceChunkId)}, retrieved into context, and used to support this answer.`;
   }
 
   function setPreset(chunkSize, overlap, activeButton) {
     state.chunkSize = chunkSize;
     state.overlap = overlap;
-    [btnPresetTiny, btnPresetBalanced, btnPresetLarge].forEach(button => {
-      button.classList.toggle('active', button === activeButton);
-    });
+    setPressedState([btnPresetTiny, btnPresetBalanced, btnPresetLarge], activeButton);
     rebuildChunks();
+    pulseElements(valChunkSize, valOverlap, chunksVisualList, document.getElementById('py-chunk-size-line'), document.getElementById('py-overlap-line'));
   }
 
   sliderChunkSize.addEventListener('input', event => {
     state.chunkSize = parseInt(event.target.value, 10);
-    [btnPresetTiny, btnPresetBalanced, btnPresetLarge].forEach(button => button.classList.remove('active'));
+    setPressedState([btnPresetTiny, btnPresetBalanced, btnPresetLarge], null);
     rebuildChunks();
+    pulseElements(valChunkSize, chunksVisualList, document.getElementById('py-chunk-size-line'));
   });
   sliderOverlap.addEventListener('input', event => {
     state.overlap = parseInt(event.target.value, 10);
-    [btnPresetTiny, btnPresetBalanced, btnPresetLarge].forEach(button => button.classList.remove('active'));
+    setPressedState([btnPresetTiny, btnPresetBalanced, btnPresetLarge], null);
     rebuildChunks();
+    pulseElements(valOverlap, chunksVisualList, document.getElementById('py-overlap-line'));
   });
   toggleOverlap.addEventListener('change', event => {
     state.showOverlap = event.target.checked;
     renderChunks();
+    pulseElements(chunksVisualList);
   });
   btnPresetTiny.addEventListener('click', () => setPreset(60, 10, btnPresetTiny));
   btnPresetBalanced.addEventListener('click', () => setPreset(140, 30, btnPresetBalanced));
@@ -550,10 +671,12 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
   sliderAngleAdjust.addEventListener('input', () => {
     sliderAngleAdjust.dataset.manual = 'true';
     renderAngleVisualizer();
+    pulseElements(angleCircleSvg, angleFormulaText);
   });
   sliderTopK.addEventListener('input', event => {
     state.topK = parseInt(event.target.value, 10);
     updateTopKFlow();
+    pulseElements(valTopK, topkVisualList, contextSelectedList, promptContextPreview, answerEvidence, document.getElementById('py-top-k-line'), document.getElementById('py-context-line'));
   });
 
   function setQuery(query, activePreset = null) {
@@ -561,8 +684,10 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     userQueryInput.value = query;
     displayQueryText.textContent = `“${query}”`;
     delete sliderAngleAdjust.dataset.manual;
-    qPresetBtns.forEach(button => button.classList.toggle('active', button === activePreset));
+    state.selectedSimilarityChunkId = null;
+    setPressedState(qPresetBtns, activePreset);
     updateRetrievalFlow();
+    pulseElements(displayQueryText, displayQueryVector, svgSpace, similarityRankingList, document.getElementById('py-query-line'), document.getElementById('py-prompt-line'));
   }
 
   btnVectorizeQuery.addEventListener('click', () => {
@@ -577,28 +702,11 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
 
   sourceCitationBtn.addEventListener('click', () => {
     if (sourceCitationBtn.disabled || state.sourceChunkId === null) return;
-    const targetCard = document.getElementById(`chunk-card-${state.sourceChunkId}`);
-    if (!targetCard) return;
-    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    targetCard.classList.add('source-highlight');
-    setTimeout(() => targetCard.classList.remove('source-highlight'), 2500);
+    const isExpanded = sourceCitationBtn.getAttribute('aria-expanded') === 'true';
+    sourceCitationBtn.setAttribute('aria-expanded', String(!isExpanded));
+    sourceDetail.classList.toggle('hidden', isExpanded);
+    if (!isExpanded) sourceDetail.focus?.();
   });
-
-  langBtnEn.addEventListener('click', () => setLanguage('en'));
-  langBtnPt.addEventListener('click', () => setLanguage('pt'));
-
-  function setLanguage(language) {
-    currentLang = language;
-    langBtnEn.classList.toggle('active', language === 'en');
-    langBtnPt.classList.toggle('active', language === 'pt');
-    langBtnEn.setAttribute('aria-pressed', String(language === 'en'));
-    langBtnPt.setAttribute('aria-pressed', String(language === 'pt'));
-    document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en';
-    const context = state.retrievedChunks
-      .map(chunk => `[Chunk ${formatChunkId(chunk.id)}]\n${chunk.text}`)
-      .join('\n\n');
-    renderContextAndGeneration(context);
-  }
 
   const pipelineNodes = [
     { id: 'node-doc', text: 'Step 1: Raw document loaded as source text.' },
@@ -618,20 +726,39 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     clearInterval(state.pipelineTimer);
     state.pipelineTimer = null;
     state.pipelineStep = -1;
-    pipelineNodes.forEach(node => document.getElementById(node.id)?.classList.remove('active-node'));
+    pipelineNodes.forEach(node => {
+      const element = document.getElementById(node.id);
+      element?.classList.remove('active-node', 'completed-node', 'current-node');
+      element?.classList.add('upcoming-node');
+    });
     pipelineStatusText.textContent = 'Status: Ready to run pipeline simulation.';
   }
 
   function stepPipelineAnimation() {
-    pipelineNodes.forEach(node => document.getElementById(node.id)?.classList.remove('active-node'));
     state.pipelineStep = (state.pipelineStep + 1) % pipelineNodes.length;
+    pipelineNodes.forEach((node, index) => {
+      const element = document.getElementById(node.id);
+      element?.classList.toggle('completed-node', index < state.pipelineStep);
+      element?.classList.toggle('current-node', index === state.pipelineStep);
+      element?.classList.toggle('upcoming-node', index > state.pipelineStep);
+      element?.classList.remove('active-node');
+    });
     const currentNode = pipelineNodes[state.pipelineStep];
-    document.getElementById(currentNode.id)?.classList.add('active-node');
     pipelineStatusText.textContent = currentNode.text;
   }
 
   function runPipelineAnimation() {
     resetPipelineAnimation();
+    if (prefersReducedMotion.matches) {
+      state.pipelineStep = pipelineNodes.length - 1;
+      pipelineNodes.forEach(node => {
+        const element = document.getElementById(node.id);
+        element?.classList.remove('upcoming-node', 'current-node');
+        element?.classList.add('completed-node');
+      });
+      pipelineStatusText.textContent = 'Status: Basic RAG pipeline complete. Reduced motion is enabled, so the full result is shown immediately.';
+      return;
+    }
     stepPipelineAnimation();
     state.pipelineTimer = setInterval(() => {
       if (state.pipelineStep === pipelineNodes.length - 1) {
@@ -652,9 +779,17 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
       const id = entry.target.id;
-      progressDots.forEach(dot => dot.classList.toggle('active', dot.dataset.section === id));
+      progressDots.forEach(dot => {
+        const isActive = dot.dataset.section === id;
+        dot.classList.toggle('active', isActive);
+        if (isActive) dot.setAttribute('aria-current', 'step');
+        else dot.removeAttribute('aria-current');
+      });
       const index = Array.from(sections).indexOf(entry.target);
-      progressFill.style.height = `${((index + 1) / sections.length) * 100}%`;
+      const percentage = ((index + 1) / sections.length) * 100;
+      progressFill.style.height = `${percentage}%`;
+      mobileProgressFill.style.width = `${percentage}%`;
+      mobileProgressLabel.textContent = progressDots[index]?.querySelector('.dot-label')?.textContent || entry.target.querySelector('h2, h1')?.textContent || 'Basic RAG';
     });
   }, {
     root: null,
@@ -663,9 +798,8 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.`
   });
   sections.forEach(section => observer.observe(section));
 
-  langBtnEn.setAttribute('aria-pressed', 'true');
-  langBtnPt.setAttribute('aria-pressed', 'false');
   document.documentElement.lang = 'en';
   syncChunkControls();
   rebuildChunks();
+  resetPipelineAnimation();
 });

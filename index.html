@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learn RAG - Interactive Visual Textbook</title>
+  <title>Basic RAG Learn Module | RAG Interactive</title>
+  <meta name="description" content="Learn the Basic RAG pipeline visually—from documents and chunks to retrieval, context, prompts, and grounded answers.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,23 +12,23 @@
   <header class="navbar">
     <div class="nav-container">
       <div class="nav-brand">
-        <div class="brand-logo">RAG</div>
-        <span class="brand-name">RAG LAB</span>
-        <span class="module-badge">Module 01: Basic RAG</span>
+        <div class="brand-logo" aria-hidden="true">R·I</div>
+        <span class="brand-name">RAG Interactive</span>
+        <span class="module-badge">Module 01 · Basic RAG</span>
       </div>
-      <nav class="nav-links">
-        <div class="lang-switcher" aria-label="Language Switcher">
-          <button class="lang-btn active" id="lang-en" title="English" aria-pressed="true">EN 🇺🇸</button>
-          <button class="lang-btn" id="lang-pt" title="Português" aria-pressed="false">PT 🇧🇷</button>
-        </div>
-        <a href="#hero" class="nav-link active">Learn</a>
-        <a href="v1/index.html" class="nav-link nav-lab-btn">Open Lab →</a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#hero" class="nav-link active" aria-current="page">Learn</a>
+        <a href="v1/index.html" class="nav-link nav-lab-btn"><span class="nav-lab-wide">Open </span>Lab →</a>
       </nav>
+    </div>
+    <div class="mobile-progress" aria-label="Learning progress">
+      <span class="mobile-progress-label" id="mobile-progress-label">Introduction</span>
+      <span class="mobile-progress-track" aria-hidden="true"><span id="mobile-progress-fill"></span></span>
     </div>
   </header>
 
   <!-- Sticky Sidebar Progress Bar -->
-  <aside class="sticky-progress" aria-label="Progresso da Leitura">
+  <aside class="sticky-progress" aria-label="Learning progress">
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
@@ -54,34 +55,31 @@
     <!-- 1. HERO -->
     <section id="hero" class="section hero-section">
       <div class="hero-content">
-        <span class="section-tag">Interactive Explainer</span>
+        <span class="section-tag">RAG Interactive · Learn</span>
         <h1 class="hero-title">Learn RAG from the inside out.</h1>
         <p class="hero-subtitle">See how documents become context, and how context becomes an answer.</p>
+        <p class="hero-module">Module 01 · Basic RAG</p>
 
         <div class="hero-actions">
           <a href="#problem" class="btn btn-primary">Start learning</a>
-          <a href="v1/index.html" class="btn btn-secondary">Open Lab</a>
+          <a href="v1/index.html" class="btn btn-secondary">Explore the Lab</a>
         </div>
 
         <!-- High-level flow preview -->
-        <div class="hero-flow-preview">
-          <div class="flow-step"><span class="step-icon">📄</span> Document</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step"><span class="step-icon">🧩</span> Chunks</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step"><span class="step-icon">🌌</span> Embeddings</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step"><span class="step-icon">🔍</span> Search</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step"><span class="step-icon">📦</span> Context</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-step"><span class="step-icon">🤖</span> LLM</div>
+        <div class="hero-flow-preview" aria-label="Basic RAG learning path">
+          <div class="flow-step flow-doc"><span class="step-icon">DOC</span> Document</div>
+          <div class="flow-step flow-embed"><span class="step-icon">CHK</span> Chunks</div>
+          <div class="flow-step flow-embed"><span class="step-icon">VEC</span> Embeddings</div>
+          <div class="flow-step flow-search"><span class="step-icon">SIM</span> Search</div>
+          <div class="flow-step flow-context"><span class="step-icon">CTX</span> Context</div>
+          <div class="flow-step flow-gen"><span class="step-icon">GEN</span> Answer</div>
         </div>
       </div>
     </section>
 
     <!-- 2. THE PROBLEM RAG SOLVES -->
-    <section id="problem" class="section">
+    <section id="problem" class="section phase-start">
+      <div class="phase-eyebrow"><span>Phase 01</span><strong>Foundations</strong><small>Why external knowledge is needed</small></div>
       <div class="section-header">
         <span class="step-number">02</span>
         <h2>The problem RAG solves</h2>
@@ -106,7 +104,8 @@
         <div class="comparison-card with-rag">
           <div class="card-badge badge-green">With RAG</div>
           <div class="evidence-box">
-            <span class="evidence-tag">External Evidence Provided</span>
+            <span class="evidence-identity">Evidence A</span>
+            <span class="evidence-tag">Consultation price · External evidence provided</span>
             <p>“A consulta odontológica inicial custa R$ 250.”</p>
           </div>
           <div class="chat-bubble user-bubble">
@@ -121,7 +120,7 @@
       </div>
 
       <div class="takeaway-banner">
-        <span class="takeaway-icon">💡</span>
+        <span class="takeaway-icon" aria-hidden="true">i</span>
         <p><strong>Core Takeaway:</strong> RAG (Retrieval-Augmented Generation) gives the model relevant external information <em>before</em> generation.</p>
       </div>
     </section>
@@ -137,21 +136,16 @@
       <div class="documents-layout">
         <div class="doc-viewer-card">
           <div class="card-header">
-            <span class="card-title">📄 Sample Document: DentCare Clinic Information</span>
+            <span class="card-title"><span class="header-symbol" aria-hidden="true">DOC</span> Sample Document: DentCare Clinic Information</span>
             <span class="badge-neutral">Plain Text Source</span>
           </div>
           <div class="doc-body" id="raw-doc-text">
-A clínica DentCare funciona de segunda a sexta-feira, das 8h às 18h.
-
-A consulta odontológica inicial custa R$ 250.
-
-A Dra. Ana é especialista em ortodontia e atende às terças e quintas.
-
-O Dr. Carlos realiza tratamentos de canal e procedimentos de endodontia.
-
-Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.
-
-A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
+            <p>A clínica DentCare funciona de segunda a sexta-feira, das 8h às 18h.</p>
+            <p class="document-evidence"><span class="evidence-identity">Evidence A</span><mark>A consulta odontológica inicial custa R$ 250.</mark></p>
+            <p>A Dra. Ana é especialista em ortodontia e atende às terças e quintas.</p>
+            <p>O Dr. Carlos realiza tratamentos de canal e procedimentos de endodontia.</p>
+            <p>Cancelamentos devem ser feitos com pelo menos 24 horas de antecedência.</p>
+            <p>A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.</p>
           </div>
           <div class="doc-footer-notes">
             <ul>
@@ -164,7 +158,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
         <div class="code-column">
           <div class="code-card">
             <div class="code-header">
-              <span>Python Equivalent</span>
+              <span>In Python <small>Conceptual equivalent</small></span>
               <span class="code-lang">python</span>
             </div>
             <pre class="code-content"><code><span class="code-var">document</span> = <span class="code-str">"""
@@ -181,7 +175,8 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
     </section>
 
     <!-- 4. CHUNKING -->
-    <section id="chunking" class="section">
+    <section id="chunking" class="section phase-start">
+      <div class="phase-eyebrow"><span>Phase 02</span><strong>Indexing</strong><small>Prepare knowledge for retrieval</small></div>
       <div class="section-header">
         <span class="step-number">04</span>
         <h2>Chunking: Splitting Large Documents</h2>
@@ -192,9 +187,9 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
         <div class="controls-panel">
           <div class="presets-row">
             <span class="control-label">Quick Presets:</span>
-            <button class="preset-btn" id="preset-tiny">Tiny chunks</button>
-            <button class="preset-btn active" id="preset-balanced">Balanced chunks</button>
-            <button class="preset-btn" id="preset-large">Large chunks</button>
+            <button class="preset-btn" id="preset-tiny" aria-pressed="false">Tiny chunks</button>
+            <button class="preset-btn active" id="preset-balanced" aria-pressed="true">Balanced chunks</button>
+            <button class="preset-btn" id="preset-large" aria-pressed="false">Large chunks</button>
           </div>
 
           <div class="sliders-grid">
@@ -223,12 +218,12 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
             </div>
           </div>
 
-          <div id="chunk-warning-box" class="warning-banner hidden"></div>
+          <div id="chunk-warning-box" class="warning-banner hidden" role="status" aria-live="polite"></div>
         </div>
 
         <div class="visual-output-area">
           <h3>Generated Chunks (<span id="chunk-count-badge">0</span>)</h3>
-          <div class="chunks-container" id="chunks-visual-list"></div>
+          <div class="chunks-container" id="chunks-visual-list" aria-live="polite" aria-label="Generated chunks"></div>
         </div>
 
         <div class="evidence-registry-card">
@@ -240,13 +235,13 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
 
         <div class="code-card">
           <div class="code-header">
-            <span>Python Code (Updated Live)</span>
+            <span>In Python <small>Updated from the controls above</small></span>
             <span class="code-lang">python</span>
           </div>
           <pre class="code-content"><code><span class="code-func">chunks</span> = <span class="code-func">split_text</span>(
     <span class="code-var">document</span>,
-    <span class="code-kw">chunk_size</span>=<span class="code-num" id="py-chunk-size">140</span>,
-    <span class="code-kw">overlap</span>=<span class="code-num" id="py-overlap">30</span>
+<span class="code-line" id="py-chunk-size-line">    <span class="code-kw">chunk_size</span>=<span class="code-num" id="py-chunk-size">140</span>,</span>
+<span class="code-line" id="py-overlap-line">    <span class="code-kw">overlap</span>=<span class="code-num" id="py-overlap">30</span>,</span>
 )</code></pre>
         </div>
       </div>
@@ -261,56 +256,50 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
       </div>
 
       <div class="embeddings-interactive">
-        <div class="concept-transformation">
-          <div class="text-vector-card">
-            <span class="sentence-text">“Meu cachorro está doente.”</span>
-            <span class="transform-arrow">↓ embed() ↓</span>
-            <span class="vector-preview">[ 0.21, -0.42, 0.71, 0.15, ... ]</span>
+        <div class="concept-transformation" aria-label="Chunks transformed into simulated vectors">
+          <div class="transform-source">
+            <span class="transform-kicker">Input units</span>
+            <strong>Chunks 01–<span id="embedding-chunk-count">04</span></strong>
+            <span class="evidence-identity">Evidence A travels with its chunk</span>
           </div>
-          <div class="text-vector-card">
-            <span class="sentence-text">“Meu cão precisa de um veterinário.”</span>
-            <span class="transform-arrow">↓ embed() ↓</span>
-            <span class="vector-preview">[ 0.19, -0.40, 0.68, 0.18, ... ]</span>
-          </div>
-          <div class="text-vector-card">
-            <span class="sentence-text">“Como instalar Docker no Linux.”</span>
-            <span class="transform-arrow">↓ embed() ↓</span>
-            <span class="vector-preview">[-0.85,  0.77, -0.12, 0.91, ... ]</span>
+          <div class="transform-operation" aria-hidden="true"><span>embed(chunks)</span><b>→</b></div>
+          <div class="transform-result">
+            <span class="transform-kicker">Simulated output</span>
+            <code id="embedding-vector-preview">[[0.82, …], [0.34, …], …]</code>
+            <small>One vector per chunk</small>
           </div>
         </div>
 
         <div class="vector-space-wrapper">
           <div class="vector-space-header">
             <h3>Illustrative 2D Projection</h3>
-            <span class="teaching-note">⚠️ Simulated educational feature vectors. Real embeddings normally have hundreds or thousands of dimensions; this visualization teaches the mechanism and does not reproduce a real embedding model.</span>
+            <span class="teaching-note"><strong>Illustrative:</strong> simulated educational feature vectors. Real embeddings normally have hundreds or thousands of dimensions; this visualization teaches the mechanism and does not reproduce a real embedding model.</span>
           </div>
 
+          <p class="scroll-hint vector-scroll-hint">Scroll horizontally to inspect the full projection →</p>
           <div class="vector-space-canvas-container">
-            <svg id="vector-space-svg" viewBox="0 0 700 400" preserveAspectRatio="xMidYMid meet"></svg>
+            <svg id="vector-space-svg" viewBox="0 0 700 400" preserveAspectRatio="xMidYMid meet" aria-label="Illustrative embedding projection. Document chunks are circles and the query is a diamond."></svg>
             <div id="vector-space-tooltip" class="tooltip hidden"></div>
           </div>
 
           <div id="embedding-inspector" class="inspector-card">
-            <h4>Click any point above to inspect its simulated vector and illustrative placement</h4>
+            <h4>Select any point above to inspect its simulated vector and illustrative placement</h4>
           </div>
         </div>
 
         <div class="code-card">
           <div class="code-header">
-            <span>Real-world Python Equivalent (not executed here)</span>
+            <span>In Python <small>Conceptual equivalent—not executed here</small></span>
             <span class="code-lang">python</span>
           </div>
-          <pre class="code-content"><code><span class="code-comment"># Embed chunks to store in vector database</span>
-<span class="code-var">chunk_embeddings</span> = <span class="code-func">embed</span>(<span class="code-var">chunks</span>)
-
-<span class="code-comment"># Example sentence embedding</span>
-<span class="code-var">vector</span> = <span class="code-func">embed</span>(<span class="code-str">"Meu cachorro está doente."</span>)</code></pre>
+          <pre class="code-content"><code><span class="code-var">chunk_embeddings</span> = <span class="code-func">embed</span>(<span class="code-var">chunks</span>)</code></pre>
         </div>
       </div>
     </section>
 
     <!-- 6. QUERY EMBEDDING -->
-    <section id="query-embedding" class="section">
+    <section id="query-embedding" class="section phase-start">
+      <div class="phase-eyebrow"><span>Phase 03</span><strong>Retrieval</strong><small>Compare the question with indexed knowledge</small></div>
       <div class="section-header">
         <span class="step-number">06</span>
         <h2>Query Embedding: Vectorizing the Question</h2>
@@ -327,12 +316,12 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
 
           <div class="query-presets">
             <span class="presets-label">Preset Questions:</span>
-            <button class="q-preset-btn active" data-q="Quanto custa uma consulta?">1. Preço da consulta</button>
-            <button class="q-preset-btn" data-q="Quem atende ortodontia?">2. Ortodontia</button>
-            <button class="q-preset-btn" data-q="Quais formas de pagamento são aceitas?">3. Formas de pagamento</button>
-            <button class="q-preset-btn" data-q="Quando posso cancelar?">4. Cancelamento (24h)</button>
-            <button class="q-preset-btn" data-q="Quem realiza tratamento de canal?">5. Tratamento de canal</button>
-            <button class="q-preset-btn" data-q="A clínica aceita convênio Unimed?" style="border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;">⚠️ 6. Convênios (Out-of-Domain Test)</button>
+            <button class="q-preset-btn active" data-q="Quanto custa uma consulta?" aria-pressed="true">1. Preço da consulta</button>
+            <button class="q-preset-btn" data-q="Quem atende ortodontia?" aria-pressed="false">2. Ortodontia</button>
+            <button class="q-preset-btn" data-q="Quais formas de pagamento são aceitas?" aria-pressed="false">3. Formas de pagamento</button>
+            <button class="q-preset-btn" data-q="Quando posso cancelar?" aria-pressed="false">4. Cancelamento (24h)</button>
+            <button class="q-preset-btn" data-q="Quem realiza tratamento de canal?" aria-pressed="false">5. Tratamento de canal</button>
+            <button class="q-preset-btn q-preset-out-of-domain" data-q="A clínica aceita convênio Unimed?" aria-pressed="false">6. Convênios · Out-of-domain test</button>
           </div>
         </div>
 
@@ -344,9 +333,14 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
           <div class="arrow-down">↓</div>
           <div class="vector-box">
             <span class="q-label">Simulated Query Feature Vector (Normalized)</span>
-            <span class="q-vector" id="display-query-vector">[0.78, 0.12, -0.45, 0.88, ...]</span>
+            <span class="q-vector" id="display-query-vector" aria-live="polite">[0.78, 0.12, -0.45, 0.88, ...]</span>
           </div>
         </div>
+      </div>
+
+      <div class="code-card">
+        <div class="code-header"><span>In Python <small>Updated when the query is embedded</small></span><span class="code-lang">python</span></div>
+        <pre class="code-content"><code><span class="code-line" id="py-query-line"><span class="code-var">query_embedding</span> = <span class="code-func">embed</span>(<span class="code-var">query</span>)</span></code></pre>
       </div>
     </section>
 
@@ -376,22 +370,28 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
         </div>
 
         <div class="sim-main-results">
-          <h3>Ranked Chunks by Dense Cosine Similarity</h3>
-          <div class="ranking-list" id="similarity-ranking-list"></div>
+          <div class="results-heading">
+            <h3>Ranked Chunks by Dense Cosine Similarity</h3>
+            <span>Select a row to compare its geometry</span>
+          </div>
+          <div class="ranking-list" id="similarity-ranking-list" aria-live="polite"></div>
         </div>
       </div>
 
       <!-- INTERACTIVE COSINE ANGLE VISUALIZER -->
       <div class="angle-visualizer-card">
         <div class="angle-viz-header">
-          <h4>📐 Interactive Geometric Cosine Angle Visualizer</h4>
+          <div>
+            <h4>Geometric cosine comparison</h4>
+            <p class="angle-comparison-label">Query ↔ <strong id="angle-compared-chunk">top-ranked chunk</strong></p>
+          </div>
           <span class="badge-neutral">Explore cos(θ) = (u · v) / (||u|| ||v||)</span>
         </div>
 
         <div class="angle-viz-grid">
           <div class="angle-canvas-wrapper">
             <svg id="angle-circle-svg" viewBox="-120 -120 240 240"></svg>
-            <span style="font-size:0.75rem; color:var(--text-muted); margin-top:0.4rem;">Unit Circle Projection</span>
+            <span class="projection-label">Unit-circle projection</span>
           </div>
 
           <div class="angle-details-panel">
@@ -406,16 +406,17 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
               </div>
               <div class="angle-metric">
                 <span class="angle-metric-label">Directional Alignment</span>
-                <span class="angle-metric-val" id="angle-semantic-status" style="color:var(--color-context); font-size:1.1rem;">Strong Alignment</span>
+                <span class="angle-metric-val angle-status" id="angle-semantic-status">Strong Alignment</span>
               </div>
             </div>
 
             <div class="angle-slider-group">
-              <div style="display:flex; justify-content:space-between; font-size:0.85rem;">
+              <div class="angle-slider-header">
                 <label for="slider-angle-adjust">Adjust Vector Angle θ manually:</label>
                 <span id="label-angle-slider">24.5°</span>
               </div>
               <input type="range" id="slider-angle-adjust" min="0" max="180" step="1" value="25">
+              <p class="sandbox-note">Geometry sandbox only — this control does not change retrieval ranking.</p>
             </div>
 
             <div class="angle-formula-box" id="angle-formula-text">
@@ -427,7 +428,7 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
 
       <div class="code-card">
         <div class="code-header">
-          <span>Python Similarity Search</span>
+          <span>In Python <small>Dense cosine retrieval</small></span>
           <span class="code-lang">python</span>
         </div>
         <pre class="code-content"><code><span class="code-var">scores</span> = <span class="code-func">cosine_similarity</span>(
@@ -474,22 +475,26 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
 
         <div class="retrieved-selection-view">
           <h3>Retrieved Chunks Selection (Top K = <span id="top-k-badge">3</span>)</h3>
-          <div class="topk-list-container" id="topk-visual-list"></div>
+          <div class="topk-list-container" id="topk-visual-list" aria-live="polite"></div>
         </div>
 
         <div class="code-card">
           <div class="code-header">
-            <span>Python Top-K Selection</span>
+            <span>In Python <small>Updated from Top K</small></span>
             <span class="code-lang">python</span>
           </div>
-          <pre class="code-content"><code><span class="code-comment"># Keep the K highest cosine-similarity results</span>
-<span class="code-var">retrieved_chunks</span> = <span class="code-func">top_k</span>(<span class="code-var">ranked_chunks</span>, <span class="code-kw">k</span>=<span class="code-num" id="py-top-k">3</span>)</code></pre>
+          <pre class="code-content"><code><span class="code-var">results</span> = <span class="code-func">similarity_search</span>(
+    <span class="code-var">query_embedding</span>,
+    <span class="code-var">chunk_embeddings</span>,
+<span class="code-line" id="py-top-k-line">    <span class="code-kw">k</span>=<span class="code-num" id="py-top-k">3</span>,</span>
+)</code></pre>
         </div>
       </div>
     </section>
 
     <!-- 9. CONTEXT -->
-    <section id="context" class="section">
+    <section id="context" class="section phase-start">
+      <div class="phase-eyebrow"><span>Phase 04</span><strong>Augment &amp; Generate</strong><small>Turn retrieved knowledge into grounded output</small></div>
       <div class="section-header">
         <span class="step-number">09</span>
         <h2>Context: Assembly of Retrieved Knowledge</h2>
@@ -498,16 +503,31 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
 
       <div class="context-assembly-layout">
         <div class="important-note-card">
-          <span class="note-icon">📌</span>
+          <span class="note-icon" aria-hidden="true">i</span>
           <p><strong>Crucial Distinction:</strong> The LLM does <em>not</em> search the vector database itself. The Retriever performs the search and places the facts into the Context buffer.</p>
+        </div>
+
+        <div class="context-collection" aria-label="Retrieved chunks collected into context">
+          <div>
+            <span class="collection-label">Selected evidence units</span>
+            <div class="context-selected-list" id="context-selected-list" aria-live="polite"></div>
+          </div>
+          <span class="collection-arrow" aria-hidden="true">→</span>
         </div>
 
         <div class="context-buffer-card">
           <div class="card-header">
-            <span>📦 Context Buffer (Evidence payload for LLM)</span>
+            <span><span class="header-symbol" aria-hidden="true">CTX</span> Context Buffer</span>
             <span class="badge-green">Retriever Output</span>
           </div>
-          <div class="context-body" id="context-buffer-output"></div>
+          <div class="context-body" id="context-buffer-output" aria-live="polite"></div>
+        </div>
+
+        <div class="code-card">
+          <div class="code-header"><span>In Python <small>Collect the selected chunk text</small></span><span class="code-lang">python</span></div>
+          <pre class="code-content"><code><span class="code-line" id="py-context-line"><span class="code-var">context</span> = <span class="code-str">"\n\n"</span>.<span class="code-func">join</span>(
+    <span class="code-var">chunk</span>.<span class="code-var">text</span> <span class="code-kw">for</span> <span class="code-var">chunk</span> <span class="code-kw">in</span> <span class="code-var">results</span>
+)</span></code></pre>
         </div>
       </div>
     </section>
@@ -521,7 +541,8 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
       </div>
 
       <div class="prompt-builder-view">
-        <div class="prompt-blocks-container">
+        <div class="prompt-assembly" aria-label="Instructions plus context plus question become one prompt">
+          <div class="prompt-blocks-container">
           <div class="prompt-block block-system">
             <span class="block-label">1. SYSTEM INSTRUCTIONS</span>
             <p>Answer using only the provided context below. If you don't know, state clearly that information is unavailable.</p>
@@ -536,26 +557,24 @@ A clínica aceita pagamentos via PIX, cartão de crédito e cartão de débito.
             <span class="block-label">3. USER QUESTION</span>
             <p id="prompt-question-preview">“Quanto custa uma consulta?”</p>
           </div>
-        </div>
-
-        <div class="assembly-equation">
-          <span>Prompt</span> = <span>Instructions</span> + <span>Retrieved Context</span> + <span>User Question</span>
+          </div>
+          <div class="assembly-connector" aria-hidden="true"><span></span><b>→</b></div>
+          <div class="prompt-payload">
+            <span>Single payload</span>
+            <strong>Augmented Prompt</strong>
+            <small>Instructions + evidence + question</small>
+          </div>
         </div>
 
         <div class="code-card">
           <div class="code-header">
-            <span>Python Prompt Construction</span>
+            <span>In Python <small>Compose one model input</small></span>
             <span class="code-lang">python</span>
           </div>
-          <pre class="code-content"><code><span class="code-var">prompt</span> = <span class="code-str">f"""
-Answer using only the context below.
-
-Context:
-{<span class="code-var">context</span>}
-
-Question:
-{<span class="code-var">query</span>}
-"""</span></code></pre>
+          <pre class="code-content"><code><span class="code-line" id="py-prompt-line"><span class="code-var">prompt</span> = <span class="code-func">build_prompt</span>(
+    <span class="code-kw">context</span>=<span class="code-var">context</span>,
+    <span class="code-kw">query</span>=<span class="code-var">query</span>,
+)</span></code></pre>
         </div>
       </div>
     </section>
@@ -564,38 +583,54 @@ Question:
     <section id="generation" class="section">
       <div class="section-header">
         <span class="step-number">11</span>
-        <h2>Simulated Generation & Grounding</h2>
+        <h2>Simulated Generation &amp; Grounding</h2>
         <p class="section-intro">Only now is a deterministic simulated answer produced. It is marked grounded only when its complete canonical evidence is present in the active context.</p>
       </div>
 
       <div class="generation-layout">
         <div class="gen-flow-card">
           <div class="gen-header">
-            <span>Prompt</span> → <span>LLM</span> → <span>Answer</span>
+            <span>Prompt</span><b>→</b><span>Simulated LLM</span><b>→</b><span>Answer</span>
           </div>
           <div class="gen-body">
             <div class="llm-response-box">
               <span class="llm-tag">Simulated LLM Output</span>
               <p class="answer-text" id="final-answer-text">“A consulta odontológica inicial custa R$ 250.”</p>
 
+              <div class="answer-evidence" id="answer-evidence" aria-live="polite">
+                <div><span class="evidence-identity">Evidence A</span><strong>Consultation price</strong></div>
+                <blockquote id="answer-evidence-quote">“A consulta odontológica inicial custa R$ 250.”</blockquote>
+                <span id="answer-evidence-location">Currently in Chunk 02 · Included in context</span>
+              </div>
+
               <div class="grounding-sources">
-                <span class="grounding-label">Evidence Citation:</span>
-                <button class="source-chip" id="source-citation-btn" disabled>No complete evidence in context</button>
+                <span class="grounding-label">Source details:</span>
+                <button class="source-chip" id="source-citation-btn" aria-expanded="false" disabled>No complete evidence in context</button>
+              </div>
+
+              <div class="source-detail hidden" id="source-detail" tabindex="-1">
+                <strong id="source-detail-title">Evidence source</strong>
+                <p id="source-detail-text"></p>
               </div>
 
               <!-- DYNAMIC GROUNDING STATUS BANNER -->
               <div id="grounding-status-box" class="grounding-status-banner retrieval-miss" role="status" aria-live="polite">
-                <span>🛡️</span> <span id="grounding-status-msg">Waiting for complete evidence in the active context.</span>
+                <span class="status-symbol" id="grounding-status-symbol" aria-hidden="true">!</span> <span id="grounding-status-msg">Waiting for complete evidence in the active context.</span>
               </div>
             </div>
           </div>
         </div>
 
+        <div class="code-card">
+          <div class="code-header"><span>In Python <small>Generate from the assembled prompt</small></span><span class="code-lang">python</span></div>
+          <pre class="code-content"><code><span class="code-line" id="py-generation-line"><span class="code-var">answer</span> = <span class="code-var">llm</span>.<span class="code-func">generate</span>(<span class="code-var">prompt</span>)</span></code></pre>
+        </div>
       </div>
     </section>
 
     <!-- 12. COMPLETE RAG PIPELINE -->
-    <section id="pipeline" class="section">
+    <section id="pipeline" class="section phase-start">
+      <div class="phase-eyebrow"><span>Phase 05</span><strong>Connect</strong><small>See the complete Basic RAG system</small></div>
       <div class="section-header">
         <span class="step-number">12</span>
         <h2>Complete Basic RAG Pipeline</h2>
@@ -609,70 +644,85 @@ Question:
           <button id="btn-reset-pipeline" class="btn btn-outline">↺ Reset</button>
         </div>
 
+        <p class="scroll-hint">Scroll horizontally inside a pipeline row when needed →</p>
         <div class="architecture-diagram">
           <!-- INDEXING PATH -->
           <div class="path-container path-indexing">
             <div class="path-title">1. INDEXING (Offline Preparation)</div>
             <div class="nodes-row">
-              <div class="pipe-node" id="node-doc">
-                <span class="node-icon">📄</span>
+              <div class="pipe-node node-doc" id="node-doc">
+                <span class="node-icon">DOC</span>
                 <span class="node-name">Document</span>
+                <span class="pipeline-evidence">Evidence A</span>
               </div>
               <div class="pipe-arrow">→</div>
-              <div class="pipe-node" id="node-chunk">
-                <span class="node-icon">🧩</span>
+              <div class="pipe-node node-embed" id="node-chunk">
+                <span class="node-icon">CHK</span>
                 <span class="node-name">Chunking</span>
+                <span class="pipeline-evidence" id="pipeline-evidence-chunk">Evidence A · Chunk --</span>
               </div>
               <div class="pipe-arrow">→</div>
-              <div class="pipe-node" id="node-embed">
-                <span class="node-icon">🌌</span>
+              <div class="pipe-node node-embed" id="node-embed">
+                <span class="node-icon">VEC</span>
                 <span class="node-name">Simulated Chunk Vectors</span>
+                <span class="pipeline-evidence">Evidence A</span>
               </div>
               <div class="pipe-arrow">→</div>
               <div class="pipe-node node-storage" id="node-vstore">
-                <span class="node-icon">🗄️</span>
+                <span class="node-icon">DB</span>
                 <span class="node-name">Vector Store</span>
+                <span class="pipeline-evidence">Evidence A indexed</span>
               </div>
             </div>
           </div>
 
+          <div class="store-bridge" aria-label="Vector Store supplies indexed chunk vectors to dense cosine search">
+            <span>Vector Store supplies indexed chunk vectors</span><b>↓</b>
+          </div>
+
           <!-- RETRIEVAL & GENERATION PATH -->
           <div class="path-container path-retrieval">
-            <div class="path-title">2. RETRIEVAL & GENERATION (Online Query Flow)</div>
+            <div class="path-title">2. RETRIEVAL &amp; GENERATION (Online Query Flow)</div>
             <div class="nodes-row">
-              <div class="pipe-node" id="node-query">
-                <span class="node-icon">💬</span>
+              <div class="pipe-node node-query" id="node-query">
+                <span class="node-icon">Q</span>
                 <span class="node-name">User Query</span>
+                <span class="pipeline-evidence">Question targets Evidence A</span>
               </div>
               <div class="pipe-arrow">→</div>
-              <div class="pipe-node" id="node-qembed">
-                <span class="node-icon">✨</span>
+              <div class="pipe-node node-query" id="node-qembed">
+                <span class="node-icon">QV</span>
                 <span class="node-name">Simulated Query Vector</span>
               </div>
               <div class="pipe-arrow">→</div>
-              <div class="pipe-node" id="node-vsearch">
-                <span class="node-icon">🔎</span>
+              <div class="pipe-node node-search" id="node-vsearch">
+                <span class="node-icon">SIM</span>
                 <span class="node-name">Dense Cosine Search</span>
+                <span class="pipeline-evidence">Evidence A ranked</span>
               </div>
               <div class="pipe-arrow">→</div>
-              <div class="pipe-node" id="node-topk">
-                <span class="node-icon">🎯</span>
+              <div class="pipe-node node-search" id="node-topk">
+                <span class="node-icon">K</span>
                 <span class="node-name">Top-K Selection</span>
+                <span class="pipeline-evidence" id="pipeline-evidence-topk">Evidence A status</span>
               </div>
               <div class="pipe-arrow">→</div>
-              <div class="pipe-node" id="node-ctx">
-                <span class="node-icon">📦</span>
+              <div class="pipe-node node-context" id="node-ctx">
+                <span class="node-icon">CTX</span>
                 <span class="node-name">Context Buffer</span>
+                <span class="pipeline-evidence">Evidence A collected</span>
               </div>
               <div class="pipe-arrow">→</div>
-              <div class="pipe-node" id="node-prompt">
-                <span class="node-icon">📝</span>
+              <div class="pipe-node node-context" id="node-prompt">
+                <span class="node-icon">P</span>
                 <span class="node-name">Prompt Builder</span>
+                <span class="pipeline-evidence">Evidence A in prompt</span>
               </div>
               <div class="pipe-arrow">→</div>
-              <div class="pipe-node" id="node-llm">
-                <span class="node-icon">🤖</span>
+              <div class="pipe-node node-gen" id="node-llm">
+                <span class="node-icon">GEN</span>
                 <span class="node-name">LLM Generation</span>
+                <span class="pipeline-evidence">Answer cites Evidence A</span>
               </div>
             </div>
           </div>
@@ -687,20 +737,21 @@ Question:
     <!-- 13. TRANSITION TO LAB -->
     <section id="transition" class="section transition-section">
       <div class="transition-card">
+        <span class="section-tag">RAG Interactive · Lab</span>
         <h2>You now know the components.</h2>
-        <p class="transition-sub">Now break them, tune them, and inspect the complete system in the interactive debugger lab.</p>
+        <p class="transition-sub">Continue in the Lab to experiment, adjust parameters, break assumptions, and inspect the complete pipeline as a debugger.</p>
         <p class="future-modules-note">Future modules will cover Hybrid Retrieval, Reranking, and Evaluation as separate advanced topics.</p>
 
         <div class="transition-actions">
-          <a href="v1/index.html" class="btn btn-large-primary">Open RAG Lab →</a>
-          <button class="btn btn-large-disabled" disabled>Build it in Python — Coming next</button>
+          <a href="v1/index.html" class="btn btn-large-primary">Continue in RAG Interactive Lab →</a>
         </div>
+        <p class="coming-next-note">Build it in Python · Coming next</p>
       </div>
     </section>
   </main>
 
   <footer class="app-footer">
-    <p>RAG LAB Educational Platform &bull; Learn RAG from the inside out &bull; Native Web Standards</p>
+    <p><strong>RAG Interactive</strong> · Learn visually · Experiment in the Lab · Built with native web standards</p>
   </footer>
 
   <script src="rag-core.js"></script>

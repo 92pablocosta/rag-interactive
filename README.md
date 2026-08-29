@@ -49,15 +49,16 @@ The intended progression is concept → visualization → experiment → Python,
 The main page contains the initial **Basic RAG** learning journey. It covers:
 
 - the problem RAG solves and the role of external documents;
-- dynamic character-based chunking and overlap;
+- lossless character-based chunking with measured overlap and automatic overlap limits;
 - simulated educational feature vectors and an illustrative two-dimensional projection;
 - query vectorization and cosine-similarity concepts;
 - deterministic dense cosine-similarity retrieval;
-- Top-K selection with context-size and approximate-token feedback;
+- Top-K selection with selected-text size and explicit approximate-token feedback (≈ characters ÷ 4);
 - retrieved-context and augmented-prompt assembly;
-- deterministic simulated generation with stable evidence identities and strict grounding;
+- a five-item canonical evidence catalog with stable identities across changing chunk boundaries;
+- deterministic simulated generation with strict evidence grounding and safe unsupported-query states;
 - an animated complete-pipeline walkthrough; and
-- English/Portuguese switching for selected dynamic status messages.
+- an English-only interface while complete translation remains future work.
 
 The `v1/` directory contains an earlier **RAG Lab** experiment. It lets learners choose a sample or custom document, change chunk size, overlap, Top-K, and query text, then inspect generated chunks, a heuristic similarity ranking, the assembled prompt, and a simulated answer.
 
@@ -118,13 +119,14 @@ RAG Interactive is designed around three complementary experiences:
 In the current Learn experience, you can:
 
 - switch among tiny, balanced, and large chunk presets;
-- change chunk size and overlap, and highlight overlapping text;
+- change chunk size and overlap without losing source text, and highlight the overlap that actually repeats between adjacent chunks;
 - inspect simulated chunk vectors in an SVG visualization;
 - enter a query or choose presets, including an out-of-domain test;
 - inspect a simulated dense cosine-similarity ranking;
 - adjust a geometric cosine-angle visualization;
 - change Top-K and observe selected chunks, context, prompt, and answer states;
-- trace canonical evidence to its current chunk, rank, Top-K state, context, and citation; and
+- trace canonical evidence to its current chunk, dense rank, Top-K state, context, and citation;
+- see when fragmented or excluded evidence cannot support an answer; and
 - run, reset, or step through the complete pipeline animation.
 
 Because the controls share state, a change near the start of the lesson can affect later retrieval, context, and generation views.
@@ -139,13 +141,15 @@ These examples connect visual behavior to familiar RAG implementation patterns. 
 
 Educational simulations are used where running real embedding models or LLMs would add unnecessary infrastructure to the introductory learning experience. The current Learn module deterministically simulates educational feature vectors, dense cosine retrieval, approximate token counts, LLM responses, and grounding.
 
-These simulations teach how information and decisions move through the pipeline; they are not production-grade machine-learning implementations. The browser vectors are handcrafted educational features rather than model-produced embeddings, and the 2D chart is an illustrative projection rather than PCA.
+These simulations teach how information and decisions move through the pipeline; they are not production-grade machine-learning implementations. The browser vectors are handcrafted educational features rather than model-produced embeddings, and the 2D chart is an illustrative projection rather than PCA. Cosine similarity retains its mathematical range of -1 to 1, while the geometry view is driven by the dense cosine score; its manual angle control is an isolated visual sandbox and does not change retrieval.
+
+Grounding is intentionally strict. An answer is marked grounded only when one retrieved chunk contains the complete canonical evidence and that chunk is present in the active context. Fragmented evidence, evidence excluded by Top-K, and unsupported queries do not produce an enabled citation. Token counts are estimates based on the selected text length using the clearly labeled approximation ≈ characters ÷ 4.
 
 The project follows a simple accuracy principle:
 
 > A simplified visualization is acceptable. A misleading visualization is not.
 
-Technically simplified behavior should therefore be labeled clearly in the interface and documentation.
+Accordingly, technically simplified behavior is labeled clearly in the interface and documentation.
 
 ## Tech stack
 
@@ -153,8 +157,9 @@ Technically simplified behavior should therefore be labeled clearly in the inter
 - CSS3
 - Vanilla JavaScript
 - SVG for the vector-space and cosine-angle visualizations
+- Node.js built-in test runner for core-logic tests
 
-There is no application framework, npm requirement, backend, database, API key, or build process. All current behavior runs in the browser.
+There is no application framework, npm requirement, backend, database, API key, or build process. The learning application runs entirely in the browser; Node.js is needed only to run the optional automated tests.
 
 ## Running locally
 
@@ -179,13 +184,29 @@ python3 -m http.server 8000
 
 Then visit [http://localhost:8000](http://localhost:8000). The server is optional; it does not add a backend to the application.
 
+## Running tests
+
+The testable RAG logic is isolated in `rag-core.js` and uses only Node.js built-in modules. No package installation is required.
+
+```bash
+node --check script.js
+node --check rag-core.js
+node --test tests/*.test.js
+```
+
+The current suite covers chunk presets and boundary values, incompatible overlap adjustment, complete document reconstruction, canonical evidence lookup, supported and unsupported queries, Top-K values of 1, 3, and 5, citation integrity, cosine-similarity endpoints, token estimates, and UI contracts for branding, narrative phases, accessibility, and responsive orientation. These programmatic checks complement—not replace—visual browser testing for interface changes.
+
 ## Project structure
 
 ```text
 .
 ├── index.html       # Guided Module 01 learning content and interface
 ├── styles.css       # Layout, responsive styling, and visual states for Learn
-├── script.js        # Learn interactions and deterministic simulations
+├── rag-core.js      # Testable chunking, vector, evidence, and token helpers
+├── script.js        # Learn UI orchestration and deterministic simulations
+├── tests/
+│   ├── rag-core.test.js     # Node test suite for the reusable RAG core
+│   └── ui-contract.test.js  # Structural UI, accessibility, and responsive contracts
 ├── README.md        # Project documentation
 └── v1/
     ├── index.html   # Earlier RAG Lab/debugger interface
@@ -264,7 +285,7 @@ There is no formal contribution guide yet. Before opening a large change, consid
 
 ## Status
 
-RAG Interactive is an early-stage educational project under active development. Module 01 and the experimental Lab are usable prototypes, but interfaces, examples, terminology, and roadmap priorities may change.
+RAG Interactive is an early-stage educational project under active development. Module 01 and the experimental Lab are usable prototypes, but interfaces, examples, terminology, and roadmap priorities may change. Complete translation and the future advanced learning modules remain outside the current Basic RAG experience.
 
 ## License
 
