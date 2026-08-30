@@ -1,0 +1,33 @@
+{
+  "name": "RAG Interactive visual identity assets",
+  "version": "1.0.0",
+  "created": "2026-08-29",
+  "source": "Approved RAG Interactive identity preview",
+  "colors": {
+    "background": "#0B0F14",
+    "surface": "#111820",
+    "surfaceRaised": "#151D26",
+    "border": "#34414E",
+    "text": "#F4F7FA",
+    "textMuted": "#8E9AA8",
+    "accent": "#0A96FF",
+    "accentDeep": "#075FB3"
+  },
+  "icons": [
+    { "id": "document", "file": "icons/document.svg", "label": "Document" },
+    { "id": "chunks", "file": "icons/chunks.svg", "label": "Chunks" },
+    { "id": "embeddings", "file": "icons/embeddings.svg", "label": "Embeddings" },
+    { "id": "search", "file": "icons/search.svg", "label": "Search" },
+    { "id": "context", "file": "icons/context.svg", "label": "Context" },
+    { "id": "answer", "file": "icons/answer.svg", "label": "Answer" }
+  ],
+  "logo": {
+    "mark": "logo/mark.svg",
+    "lockup": "logo/lockup.svg",
+    "favicon": "logo/favicon.svg"
+  },
+  "sprite": "icons/sprite.svg",
+  "tokens": "tokens.css",
+  "preview": "preview.html",
+  "previewImage": "preview.png"
+}

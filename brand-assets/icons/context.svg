@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Context</title>
+  <desc id="desc">A context buffer card connected to the RAG Interactive blue node.</desc>
+  <g fill="none" stroke="#F4F7FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 10h48v38H24L14 55v-7H8z"/>
+    <path d="M18 22h27M18 30h22M18 38h16"/>
+    <path d="M40 48h10"/>
+  </g>
+  <circle cx="54" cy="48" r="6" fill="#075FB3"/>
+  <circle cx="54" cy="48" r="4" fill="#0A96FF"/>
+</svg>

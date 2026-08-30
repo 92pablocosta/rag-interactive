@@ -190,6 +190,12 @@ Accordingly, technically simplified behavior is labeled clearly in the interface
 
 There is no application framework, npm requirement, backend, database, API key, or build process. The learning application runs entirely in the browser; Node.js is needed only to run the optional automated tests.
 
+## Visual system
+
+Learn and Lab share a restrained blueprint-style interface built from CSS variables in `styles.css`: near-black surfaces, cool technical borders, white typography, one electric-blue identity accent, compact radii, and selective low-contrast grids. The six Basic RAG stages use the reusable SVG family in `brand-assets/icons/`, while the navigation, hero construction diagram, and favicon use the related RI mark in `brand-assets/logo/`.
+
+The stage artwork is decorative when adjacent text already supplies the accessible name. Semantic status colors remain separate from the core white-and-blue icon identity, and all controls preserve the existing focus, keyboard, and reduced-motion behavior.
+
 ## Running locally
 
 Clone the repository and enter its directory:
@@ -232,7 +238,7 @@ node --check tests/publication-contract.test.js
 node --test tests/*.test.js
 ```
 
-The current suite contains 45 passing tests covering chunk presets and boundary values, incompatible overlap adjustment, complete document reconstruction, canonical evidence lookup, supported and unsupported queries, Top-K values of 1, 3, and 5, citation integrity, cosine-similarity endpoints and known-vector math, evidence-chunk ranking, token estimates, UI contracts for branding, narrative phases, accessibility, responsive orientation (including the viewport-safe content wrapper), the Lab page, the absence of version branding and unsafe HTML rendering, and publication contracts for canonical URLs, metadata, favicon, robots.txt, sitemap, and link integrity.
+The current suite contains 49 passing tests covering chunk presets and boundary values, incompatible overlap adjustment, complete document reconstruction, canonical evidence lookup, supported and unsupported queries, Top-K values of 1, 3, and 5, citation integrity, cosine-similarity endpoints and known-vector math, evidence-chunk ranking, token estimates, UI contracts for the RI branding and six-stage icon family, narrative phases, accessibility, responsive orientation (including the viewport-safe content wrapper), unique IDs and JavaScript DOM references, the Lab page, the absence of emoji interface graphics, version branding, and unsafe HTML rendering, plus publication contracts for canonical URLs, metadata, favicon, robots.txt, sitemap, and link integrity.
 
 The latest verification pass also checked JavaScript syntax across Learn and the Lab, HTML structure and unique IDs, JavaScript-to-DOM references for both pages, CSS brace structure, overflow protections, keyboard and reduced-motion contracts, successful local HTTP responses for every HTML, CSS, and JavaScript asset, and publication metadata (canonical URLs, Open Graph, favicon paths, robots.txt, and sitemap). The Lab was consolidated into the RAG Interactive identity under `lab/`, the earlier `v1/` experiment was removed, and the advanced-module content remained absent from Learn. These programmatic and structural checks complement—not replace—visual browser testing.
 
@@ -245,6 +251,7 @@ The latest verification pass also checked JavaScript syntax across Learn and the
 ├── rag-core.js      # Testable chunking, vector, similarity, evidence, and token helpers
 ├── script.js        # Learn UI orchestration and deterministic simulations
 ├── favicon.svg      # R·I brand favicon (SVG, shared by Learn and Lab)
+├── brand-assets/    # RI logo lockups, favicon source, pipeline SVG family, and palette reference
 ├── robots.txt       # Minimal crawler policy referencing the sitemap
 ├── sitemap.xml      # Public pages: Learn / and Lab /lab/
 ├── lab/
@@ -259,7 +266,7 @@ The latest verification pass also checked JavaScript syntax across Learn and the
 └── README.md        # Project documentation
 ```
 
-No generated assets or dependency directories are required to run the current project.
+No dependency directories are required to run the current project.
 
 ## Roadmap
 

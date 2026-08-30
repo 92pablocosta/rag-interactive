@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Search</title>
+  <desc id="desc">A search lens whose handle terminates in the RAG Interactive blue node.</desc>
+  <g fill="none" stroke="#F4F7FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="27" cy="27" r="17"/>
+    <path d="m39 39 11 11"/>
+  </g>
+  <circle cx="53" cy="53" r="6" fill="#075FB3"/>
+  <circle cx="53" cy="53" r="4" fill="#0A96FF"/>
+</svg>

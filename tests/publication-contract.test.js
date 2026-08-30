@@ -54,6 +54,9 @@ test('favicon references resolve from both pages', () => {
   assert.ok(fs.existsSync(path.join(root, 'favicon.svg')), 'favicon.svg must exist at the site root');
   assert.match(learnHtml, /rel="icon"\s+type="image\/svg\+xml"\s+href="favicon\.svg"/);
   assert.match(labHtml, /rel="icon"\s+type="image\/svg\+xml"\s+href="\.\.\/favicon\.svg"/);
+  const favicon = fs.readFileSync(path.join(root, 'favicon.svg'), 'utf8');
+  assert.match(favicon, /RAG Interactive favicon/);
+  assert.match(favicon, /#0A96FF/);
 });
 
 test('robots.txt exists and references the sitemap', () => {

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Answer</title>
+  <desc id="desc">A grounded answer card flowing into the RAG Interactive blue node.</desc>
+  <g fill="none" stroke="#F4F7FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 10h48v38H34l-9 7H8z"/>
+    <path d="M18 22h27M18 30h20"/>
+    <path d="M18 41h7c5 0 6-5 11-5s6 5 12 5h2"/>
+  </g>
+  <circle cx="54" cy="41" r="6" fill="#075FB3"/>
+  <circle cx="54" cy="41" r="4" fill="#0A96FF"/>
+</svg>

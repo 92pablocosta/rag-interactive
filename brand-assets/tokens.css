@@ -1,0 +1,33 @@
+:root {
+  --ri-bg: #0b0f14;
+  --ri-surface: #111820;
+  --ri-surface-raised: #151d26;
+  --ri-border: #34414e;
+  --ri-grid: rgba(142, 154, 168, 0.08);
+  --ri-text: #f4f7fa;
+  --ri-text-muted: #8e9aa8;
+  --ri-blue: #0a96ff;
+  --ri-blue-deep: #075fb3;
+  --ri-icon-size-sm: 1.5rem;
+  --ri-icon-size-md: 2rem;
+  --ri-icon-size-lg: 4rem;
+  --ri-radius-sm: 0.625rem;
+  --ri-radius-md: 1rem;
+  --ri-stroke: 3;
+}
+
+.ri-icon {
+  display: block;
+  width: var(--ri-icon-size-md);
+  height: var(--ri-icon-size-md);
+}
+
+.ri-icon-tile {
+  display: inline-grid;
+  place-items: center;
+  padding: 0.875rem;
+  color: var(--ri-text);
+  background: var(--ri-surface);
+  border: 1px solid var(--ri-border);
+  border-radius: var(--ri-radius-sm);
+}

@@ -24,6 +24,11 @@ test('the Lab shares the product design system and core logic', () => {
   assert.match(labHtml, /href="lab\.css"/);
   assert.match(labHtml, /src="\.\.\/rag-core\.js"/);
   assert.match(labHtml, /src="lab\.js"/);
+  assert.match(labHtml, /brand-assets\/logo\/lockup\.svg/);
+  assert.match(labHtml, /class="lab-intro"/);
+  for (const icon of ['document', 'search', 'answer']) {
+    assert.match(labHtml, new RegExp(`brand-assets/icons/${icon}\\.svg`));
+  }
 });
 
 test('Learn and Lab link to each other using product terminology', () => {
@@ -63,4 +68,13 @@ test('the Lab page contains no visible Portuguese user-facing strings', () => {
 test('the Learn page carries a discreet authorship and source attribution', () => {
   assert.match(rootHtml, /https:\/\/github\.com\/92pablocosta\/rag-interactive/);
   assert.match(rootHtml, /footer-attribution/);
+});
+
+test('Lab keeps unique IDs and all static JavaScript DOM references resolve', () => {
+  const ids = [...labHtml.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
+  assert.equal(new Set(ids).size, ids.length, 'duplicate Lab IDs found');
+  const staticRefs = [...labJs.matchAll(/getElementById\('([^']+)'\)/g)].map(match => match[1]);
+  for (const id of new Set(staticRefs)) {
+    assert.ok(ids.includes(id), `missing Lab DOM target: ${id}`);
+  }
 });

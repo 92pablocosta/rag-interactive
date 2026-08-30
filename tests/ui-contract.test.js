@@ -16,6 +16,24 @@ test('RAG Interactive is the platform brand and the partial language switcher is
   assert.match(html, /<html lang="en">/);
 });
 
+test('the supplied RI identity and six-stage icon family define the Learn visual system', () => {
+  assert.match(html, /brand-assets\/logo\/lockup\.svg/);
+  assert.match(html, /class="pipeline-overview"/);
+  for (const icon of ['document', 'chunks', 'embeddings', 'search', 'context', 'answer']) {
+    assert.match(html, new RegExp(`brand-assets/icons/${icon}\\.svg`), `missing ${icon} stage icon`);
+  }
+  for (const token of ['--accent-blue', '--content-width', '--radius-sm', '--shadow-panel', '--grid-line']) {
+    assert.ok(css.includes(token), `missing shared visual token: ${token}`);
+  }
+});
+
+test('interface graphics do not use emoji glyphs', () => {
+  const emojiGlyphs = /[▶⏭↺✓✕◆🚀✨💡📄🧩🔍🤖]/u;
+  assert.doesNotMatch(html, emojiGlyphs);
+  assert.doesNotMatch(script, emojiGlyphs);
+  assert.doesNotMatch(css, emojiGlyphs);
+});
+
 test('the Basic RAG narrative keeps all five learning phases', () => {
   for (const phase of ['Foundations', 'Indexing', 'Retrieval', 'Augment &amp; Generate', 'Connect']) {
     assert.match(html, new RegExp(`>${phase}<`));
@@ -58,4 +76,13 @@ test('responsive orientation contracts cover requested widths', () => {
 
 test('the Learn content wrapper does not expand beyond the viewport on small screens', () => {
   assert.match(css, /\.content-wrapper\s*\{[\s\S]*?width:\s*100%/);
+});
+
+test('Learn keeps unique IDs and all static JavaScript DOM references resolve', () => {
+  const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
+  assert.equal(new Set(ids).size, ids.length, 'duplicate Learn IDs found');
+  const staticRefs = [...script.matchAll(/getElementById\('([^']+)'\)/g)].map(match => match[1]);
+  for (const id of new Set(staticRefs)) {
+    assert.ok(ids.includes(id), `missing Learn DOM target: ${id}`);
+  }
 });

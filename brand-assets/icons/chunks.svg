@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Chunks</title>
+  <desc id="desc">A document divided into chunks with a connected blue node.</desc>
+  <g fill="none" stroke="#F4F7FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 9h46v42H39a10 10 0 0 0-20 0H9z"/>
+    <path d="M24 9v31M40 9v31M9 23h46M9 37h46" opacity=".78"/>
+    <path d="M39 51h11"/>
+  </g>
+  <circle cx="54" cy="51" r="6" fill="#075FB3"/>
+  <circle cx="54" cy="51" r="4" fill="#0A96FF"/>
+</svg>

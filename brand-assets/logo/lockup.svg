@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 104" role="img" aria-labelledby="title desc">
+  <title id="title">RAG Interactive</title>
+  <desc id="desc">RAG Interactive horizontal logo lockup.</desc>
+  <g transform="translate(8 16) scale(.82)">
+    <g fill="none" stroke="#F4F7FA" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
+      <path d="M12 60V12h24c14 0 22 8 22 20S50 50 36 50H12"/><path d="m37 50 14 10"/><path d="M36 36h55"/><path d="M104 12v16M104 44v16"/><path d="M96 12h16M96 60h16"/>
+    </g>
+    <circle cx="84" cy="36" r="8" fill="#075FB3"/><circle cx="84" cy="36" r="5.5" fill="#0A96FF"/>
+  </g>
+  <path d="M125 18v68" stroke="#52606D" stroke-width="2"/>
+  <text x="150" y="48" fill="#F4F7FA" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="32" font-weight="700" letter-spacing="-.4">RAG</text>
+  <text x="150" y="79" fill="#F4F7FA" font-family="Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="28" font-weight="400" letter-spacing="-.2">Interactive</text>
+</svg>

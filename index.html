@@ -23,13 +23,14 @@
   <header class="navbar">
     <div class="nav-container">
       <div class="nav-brand">
-        <div class="brand-logo" aria-hidden="true">R·I</div>
-        <span class="brand-name">RAG Interactive</span>
+        <a class="brand-link" href="#hero" aria-label="RAG Interactive Learn home">
+          <img class="brand-lockup" src="brand-assets/logo/lockup.svg" alt="RAG Interactive" width="205" height="52">
+        </a>
         <span class="module-badge">Module 01 · Basic RAG</span>
       </div>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#hero" class="nav-link active" aria-current="page">Learn</a>
-        <a href="lab/index.html" class="nav-link nav-lab-btn"><span class="nav-lab-wide">Open </span>Lab →</a>
+        <a href="lab/index.html" class="nav-link nav-lab-btn"><span class="nav-lab-wide">Open </span>Lab</a>
       </nav>
     </div>
     <div class="mobile-progress" aria-label="Learning progress">
@@ -66,25 +67,63 @@
     <!-- 1. HERO -->
     <section id="hero" class="section hero-section">
       <div class="hero-content">
-        <span class="section-tag">RAG Interactive · Learn</span>
-        <h1 class="hero-title">Learn RAG from the inside out.</h1>
-        <p class="hero-subtitle">See how documents become context, and how context becomes an answer.</p>
-        <p class="hero-module">Module 01 · Basic RAG</p>
+        <div class="hero-copy">
+          <span class="section-tag">Learn · Module 01</span>
+          <h1 class="hero-title">See how retrieval becomes an answer.</h1>
+          <p class="hero-subtitle">Follow information through a Basic RAG system, inspect every transformation, and connect each visual step to code.</p>
+          <p class="hero-principle">See <span>→</span> Understand <span>→</span> Interact <span>→</span> Code <span>→</span> Connect</p>
 
-        <div class="hero-actions">
-          <a href="#problem" class="btn btn-primary">Start learning</a>
-          <a href="lab/index.html" class="btn btn-secondary">Explore the Lab</a>
+          <div class="hero-actions">
+            <a href="#problem" class="btn btn-primary">Start the guided lesson</a>
+            <a href="lab/index.html" class="btn btn-secondary">Open the Lab</a>
+          </div>
         </div>
 
-        <!-- High-level flow preview -->
-        <div class="hero-flow-preview" aria-label="Basic RAG learning path">
-          <div class="flow-step flow-doc"><span class="step-icon">DOC</span> Document</div>
-          <div class="flow-step flow-embed"><span class="step-icon">CHK</span> Chunks</div>
-          <div class="flow-step flow-embed"><span class="step-icon">VEC</span> Embeddings</div>
-          <div class="flow-step flow-search"><span class="step-icon">SIM</span> Search</div>
-          <div class="flow-step flow-context"><span class="step-icon">CTX</span> Context</div>
-          <div class="flow-step flow-gen"><span class="step-icon">GEN</span> Answer</div>
+        <div class="hero-blueprint" aria-hidden="true">
+          <div class="blueprint-coordinates">SYSTEM / BASIC_RAG / 01</div>
+          <div class="hero-mark-wrap">
+            <span class="construction-ring ring-outer"></span>
+            <span class="construction-ring ring-inner"></span>
+            <img src="brand-assets/logo/mark.svg" alt="" width="256" height="144">
+          </div>
+          <div class="blueprint-route">
+            <span>source</span><i></i><b></b><i></i><span>grounded output</span>
+          </div>
         </div>
+      </div>
+
+      <div class="pipeline-overview" aria-labelledby="pipeline-overview-title">
+        <div class="overview-heading">
+          <span class="technical-eyebrow">Basic RAG mental model</span>
+          <h2 id="pipeline-overview-title">One connected system, six visible stages.</h2>
+          <p>Use this map first. The guided sections below unpack each stage without losing the full flow.</p>
+        </div>
+        <ol class="overview-stages">
+          <li class="overview-stage">
+            <span class="pipeline-icon-tile"><img src="brand-assets/icons/document.svg" alt="" width="48" height="48"></span>
+            <span class="overview-stage-index">01</span><strong>Document</strong><small>External knowledge enters the system.</small>
+          </li>
+          <li class="overview-stage">
+            <span class="pipeline-icon-tile"><img src="brand-assets/icons/chunks.svg" alt="" width="48" height="48"></span>
+            <span class="overview-stage-index">02</span><strong>Chunks</strong><small>The source becomes retrievable units.</small>
+          </li>
+          <li class="overview-stage">
+            <span class="pipeline-icon-tile"><img src="brand-assets/icons/embeddings.svg" alt="" width="48" height="48"></span>
+            <span class="overview-stage-index">03</span><strong>Embeddings</strong><small>Meaning is represented as vectors.</small>
+          </li>
+          <li class="overview-stage">
+            <span class="pipeline-icon-tile"><img src="brand-assets/icons/search.svg" alt="" width="48" height="48"></span>
+            <span class="overview-stage-index">04</span><strong>Search</strong><small>The closest evidence is ranked.</small>
+          </li>
+          <li class="overview-stage">
+            <span class="pipeline-icon-tile"><img src="brand-assets/icons/context.svg" alt="" width="48" height="48"></span>
+            <span class="overview-stage-index">05</span><strong>Context</strong><small>Selected evidence forms the prompt.</small>
+          </li>
+          <li class="overview-stage">
+            <span class="pipeline-icon-tile"><img src="brand-assets/icons/answer.svg" alt="" width="48" height="48"></span>
+            <span class="overview-stage-index">06</span><strong>Answer</strong><small>The model responds from evidence.</small>
+          </li>
+        </ol>
       </div>
     </section>
 
@@ -322,7 +361,7 @@ The clinic accepts payments via PIX, credit card, and debit card.
           <label for="user-query-input" class="control-label">User Question (Query):</label>
           <div class="input-with-button">
             <input type="text" id="user-query-input" value="How much does a consultation cost?" placeholder="Type or choose a question...">
-            <button id="btn-vectorize-query" class="btn btn-blue">Embed Query →</button>
+            <button id="btn-vectorize-query" class="btn btn-blue">Embed query</button>
           </div>
 
           <div class="query-presets">
@@ -650,9 +689,9 @@ The clinic accepts payments via PIX, credit card, and debit card.
 
       <div class="pipeline-architect-view">
         <div class="pipeline-controls">
-          <button id="btn-run-pipeline" class="btn btn-primary">▶ Run Pipeline</button>
-          <button id="btn-step-pipeline" class="btn btn-secondary">⏭ Step Through Pipeline</button>
-          <button id="btn-reset-pipeline" class="btn btn-outline">↺ Reset</button>
+          <button id="btn-run-pipeline" class="btn btn-primary">Run pipeline</button>
+          <button id="btn-step-pipeline" class="btn btn-secondary">Step once</button>
+          <button id="btn-reset-pipeline" class="btn btn-outline">Reset</button>
         </div>
 
         <p class="scroll-hint">Scroll horizontally inside a pipeline row when needed →</p>
@@ -662,25 +701,25 @@ The clinic accepts payments via PIX, credit card, and debit card.
             <div class="path-title">1. INDEXING (Offline Preparation)</div>
             <div class="nodes-row">
               <div class="pipe-node node-doc" id="node-doc">
-                <span class="node-icon">DOC</span>
+                <span class="node-icon"><img src="brand-assets/icons/document.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Document</span>
                 <span class="pipeline-evidence">Evidence A</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-embed" id="node-chunk">
-                <span class="node-icon">CHK</span>
+                <span class="node-icon"><img src="brand-assets/icons/chunks.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Chunking</span>
                 <span class="pipeline-evidence" id="pipeline-evidence-chunk">Evidence A · Chunk --</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-embed" id="node-embed">
-                <span class="node-icon">VEC</span>
+                <span class="node-icon"><img src="brand-assets/icons/embeddings.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Simulated Chunk Vectors</span>
                 <span class="pipeline-evidence">Evidence A</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-storage" id="node-vstore">
-                <span class="node-icon">DB</span>
+                <span class="node-icon"><img src="brand-assets/icons/embeddings.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Vector Store</span>
                 <span class="pipeline-evidence">Evidence A indexed</span>
               </div>
@@ -696,42 +735,42 @@ The clinic accepts payments via PIX, credit card, and debit card.
             <div class="path-title">2. RETRIEVAL &amp; GENERATION (Online Query Flow)</div>
             <div class="nodes-row">
               <div class="pipe-node node-query" id="node-query">
-                <span class="node-icon">Q</span>
+                <span class="node-icon"><img src="brand-assets/icons/search.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">User Query</span>
                 <span class="pipeline-evidence">Question targets Evidence A</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-query" id="node-qembed">
-                <span class="node-icon">QV</span>
+                <span class="node-icon"><img src="brand-assets/icons/embeddings.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Simulated Query Vector</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-search" id="node-vsearch">
-                <span class="node-icon">SIM</span>
+                <span class="node-icon"><img src="brand-assets/icons/search.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Dense Cosine Search</span>
                 <span class="pipeline-evidence">Evidence A ranked</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-search" id="node-topk">
-                <span class="node-icon">K</span>
+                <span class="node-icon"><img src="brand-assets/icons/search.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Top-K Selection</span>
                 <span class="pipeline-evidence" id="pipeline-evidence-topk">Evidence A status</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-context" id="node-ctx">
-                <span class="node-icon">CTX</span>
+                <span class="node-icon"><img src="brand-assets/icons/context.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Context Buffer</span>
                 <span class="pipeline-evidence">Evidence A collected</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-context" id="node-prompt">
-                <span class="node-icon">P</span>
+                <span class="node-icon"><img src="brand-assets/icons/context.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">Prompt Builder</span>
                 <span class="pipeline-evidence">Evidence A in prompt</span>
               </div>
-              <div class="pipe-arrow">→</div>
+              <div class="pipe-arrow" aria-hidden="true"></div>
               <div class="pipe-node node-gen" id="node-llm">
-                <span class="node-icon">GEN</span>
+                <span class="node-icon"><img src="brand-assets/icons/answer.svg" alt="" width="28" height="28"></span>
                 <span class="node-name">LLM Generation</span>
                 <span class="pipeline-evidence">Answer cites Evidence A</span>
               </div>
@@ -754,7 +793,7 @@ The clinic accepts payments via PIX, credit card, and debit card.
         <p class="future-modules-note">Future modules will cover Hybrid Retrieval, Reranking, and Evaluation as separate advanced topics.</p>
 
         <div class="transition-actions">
-          <a href="lab/index.html" class="btn btn-large-primary">Continue in RAG Interactive Lab →</a>
+          <a href="lab/index.html" class="btn btn-large-primary">Continue in RAG Interactive Lab</a>
         </div>
         <p class="coming-next-note">Build it in Python · Coming next</p>
       </div>

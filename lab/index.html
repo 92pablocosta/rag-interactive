@@ -19,13 +19,14 @@
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="lab.css">
 </head>
-<body>
+<body class="lab-page">
   <!-- Header / Navigation -->
   <header class="navbar">
     <div class="nav-container">
       <div class="nav-brand">
-        <div class="brand-logo" aria-hidden="true">R·I</div>
-        <span class="brand-name">RAG Interactive</span>
+        <a class="brand-link" href="../index.html" aria-label="RAG Interactive Learn home">
+          <img class="brand-lockup" src="../brand-assets/logo/lockup.svg" alt="RAG Interactive" width="205" height="52">
+        </a>
         <span class="module-badge">Lab</span>
       </div>
       <nav class="nav-links" aria-label="Primary navigation">
@@ -36,8 +37,26 @@
   </header>
 
   <main class="lab-container">
+    <header class="lab-intro">
+      <div>
+        <span class="technical-eyebrow">Interactive debugger · Module 01</span>
+        <h1>Inspect the pipeline state.</h1>
+        <p>Change the source, retrieval controls, or question. Every output below is recomputed by the same educational RAG core used in Learn.</p>
+      </div>
+      <div class="lab-flow" aria-label="Debugger sequence">
+        <span><img src="../brand-assets/icons/document.svg" alt="" width="24" height="24">Input</span>
+        <i aria-hidden="true"></i>
+        <span><img src="../brand-assets/icons/search.svg" alt="" width="24" height="24">Retrieve</span>
+        <i aria-hidden="true"></i>
+        <span><img src="../brand-assets/icons/answer.svg" alt="" width="24" height="24">Verify</span>
+      </div>
+    </header>
+
     <aside class="lab-sidebar" aria-label="Lab controls">
-      <h2 class="lab-heading">Pipeline Controls</h2>
+      <div class="lab-panel-heading">
+        <span class="panel-node" aria-hidden="true"></span>
+        <div><span>Input parameters</span><h2 class="lab-heading">Pipeline controls</h2></div>
+      </div>
 
       <div class="control-group">
         <label for="lab-doc-select">Source document</label>

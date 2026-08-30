@@ -401,7 +401,7 @@ The clinic accepts payments via PIX, credit card, and debit card.`,
     queryLabel.setAttribute('fill', '#60a5fa');
     queryLabel.setAttribute('font-weight', 'bold');
     queryLabel.setAttribute('font-size', '12');
-    queryLabel.textContent = 'Query vector ◆';
+    queryLabel.textContent = 'Query vector';
     svgSpace.appendChild(queryLabel);
   }
 
@@ -540,7 +540,7 @@ The clinic accepts payments via PIX, credit card, and debit card.`,
           <p class="topk-copy">${renderChunkTextWithEvidence(item)}</p>
         </div>
         <span class="retrieval-state">
-          ${isRetrieved ? '✓ RETRIEVED' : '✕ EXCLUDED'}
+          ${isRetrieved ? 'Retrieved' : 'Excluded'}
         </span>
       `;
       topkVisualList.appendChild(row);
@@ -605,7 +605,7 @@ The clinic accepts payments via PIX, credit card, and debit card.`,
     sourceDetail.classList.add('hidden');
     answerEvidence.classList.add('hidden');
     groundingStatusBox.className = 'grounding-status-banner retrieval-miss';
-    groundingStatusSymbol.textContent = '!';
+    groundingStatusSymbol.textContent = '';
 
     const evidence = findEvidenceForQuery(state.query, evidenceCatalog);
     const support = resolveEvidenceSupport(state.documentText, evidence, state.retrievedChunks);
@@ -628,7 +628,7 @@ The clinic accepts payments via PIX, credit card, and debit card.`,
     sourceCitationBtn.disabled = false;
     sourceCitationBtn.textContent = 'Inspect evidence details';
     groundingStatusBox.className = 'grounding-status-banner grounded';
-    groundingStatusSymbol.textContent = '✓';
+    groundingStatusSymbol.textContent = '';
     groundingStatusMsg.textContent = `${messages.groundingVerified}: ${evidence.label} — ${evidence.title} is fully present in Chunk ${formatChunkId(state.sourceChunkId)} and in the active context.`;
     finalAnswerText.textContent = `“${evidence.text}”`;
     answerEvidence.classList.remove('hidden');
